@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96" role="img" aria-labelledby="title">
+  <title id="title">Paisa</title>
+  <rect x="4" y="4" width="88" height="88" rx="28" fill="#174d40"/>
+  <path d="M31 29h35M31 40h35M40 29c22 0 22 24 0 24h-8l29 22" fill="none" stroke="#d8fa9a" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

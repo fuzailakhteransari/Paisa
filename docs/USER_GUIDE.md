@@ -1,0 +1,89 @@
+# Paisa 0.3.1 — user guide
+
+Android development build, 18 November 2026. The existing four main destinations remain Home, Activity, Loans and Bills. Accounts, Budgets, Subscriptions, Tracking and Backup are reached through Settings. Home adds only one small budget summary, and only after an overall budget is configured.
+
+## Install or update
+
+Install **Paisa-0.3.1-debug.apk** on Android 8+ with an updated Android System WebView. Install over 0.1/0.2/0.3 without uninstalling to retain existing records. The application ID stays `in.paisa.personal`, the version code increases to 4, and the signing certificate is checked against the earlier build. This is a development-signed APK, not a Play Store release.
+
+All built-in interface copy is English. Your existing names, notes and descriptions are preserved as entered.
+
+The database upgrade creates new tables without dropping existing entries or bills. Existing notes, merchant identities and safe remembered category rules are carried forward. Old account labels are preserved as legacy accounts rather than guessing which real bank they belong to. Rename/correct these in Settings → Accounts when necessary.
+
+## Features
+
+| Area | Behaviour in 0.3.1 |
+|---|---|
+| SMS capture | Supported bank/card transaction messages are processed locally. Import the last 30 days; already-seen messages are skipped, including fingerprints retained from earlier versions. |
+| Gmail email tracking | Optional automatic tracking from visible Gmail payment-email notifications. This does not sign in to Gmail, read the complete inbox, or fetch past email. Truncated/grouped/hidden alerts can be missed. |
+| Email share/import | Share bank-email text to Paisa, paste it, or import common .eml/plain-text messages. Preview before saving. Supported card-bill notices can become bill reminders; paid transactions become reviewable entries. Full original email text is not retained. |
+| Bank/payment-app notifications | User selects allowed apps and separately grants Android notification access. Current/classic HDFC and Kotak packages are grouped behind one bank choice; ICICI, SBI, Axis, GPay, PhonePe and Paytm presets are included. Other packages can be added explicitly. |
+| Duplicate handling | Strong matching references, amounts, types and compatible account identity are merged. Possible cross-source matches wait for review and stay outside totals until resolved. Keep separate or merge, with Undo. |
+| Cash management | A dedicated cash wallet and bank-to-cash ATM transfers. Withdrawal itself is not an expense; the later cash spend counts once. |
+| Account history | Separate bank/cash/card accounts, account-specific transaction history, opening/corrected balances and SMS balance snapshots. Provenance and last SMS time are shown; these are not verified live banking balances. |
+| Monthly/category budgets | Optional overall limit and optional per-category limits. Net expenses, remaining amount and progress are shown separately from cash flow. |
+| Custom month start | Choose any day 1–31. Shorter months clamp the boundary to their last day. The same cycle is used for monthly totals, budget usage and budget alerts. |
+| Repayment linking | Link a captured incoming/outgoing payment to the original loan without adding another transaction. Partial repayments reduce that loan and do not count as regular income/expense. Person-total repayments can allocate oldest loans first when no specific loan is selected. |
+| Subscriptions | Manual schedules plus suggestions from repeated recorded expenses. Weekly/monthly/yearly cycles, next due date, edit/pause and existing-payment linking. A schedule never creates a paid expense by itself. Strong merchant/account/amount/date matches can link an actual captured payment and advance the renewal. |
+| Bill reminders | Card statements and utility bills, partial payments and existing-payment linking. Some supported total-due card alerts can create a bill; minimum-only notices are not mistaken for the complete statement amount. |
+| Bulk correction + Undo | Select records in Activity, change categories or delete together. Each batch is validated and committed atomically. Undo restores notes and previous fields while preserving unrelated new captures; later conflicting user edits are not overwritten. Native Undo history retains up to 20 actions. |
+| Full backup/restore | Password-encrypted local backup includes transactions, notes, accounts, rules, bills, loan links, budgets, settings, subscriptions and capture fingerprints. Restore validates before a replacement confirmation and makes an encrypted local safety copy first. |
+
+## One-time setup
+
+1. **SMS:** Home → Enable SMS tracking, then Settings → Tracking → Import last 30 days. Permissions are optional; manual entries still work.
+2. **Gmail/bank alerts:** Settings → Tracking → select Gmail and your bank/payment apps, save, then open Android notification-access settings and enable Paisa. Permit Paisa to post notifications if you want review prompts and reminders. Android grants broad listener access; Paisa filters selected apps before extracting financial text.
+3. **Accounts/Cash:** Settings → Accounts → enter an opening/corrected balance and its effective date/time if your history is incomplete. Choose the correct account for manual spends. For a transfer, select distinct source and destination accounts.
+4. **Budgets:** Settings → Budgets → set a monthly limit and cycle start day. Add category limits only if useful. Enter zero to remove a category limit.
+5. **Subscriptions:** Settings → Subscriptions → add a schedule or review a recurring-payment suggestion. Use “Link / record payment” when paid; select an existing payment before creating a manual one.
+6. **Bills:** Bills → add a card statement or utility bill with a due date. Link actual payments or record them manually. These buttons record accounting; they never send money.
+7. **Backup:** Settings → Backup & export → create a full encrypted backup. Keep its password separately. CSV is for analysis, not full recovery.
+
+## Reminder behaviour
+
+The Android app uses an inexact daily alarm around 9 AM, with re-scheduling after reboot, app update and timezone change. Supported new captures and app activity also trigger checks. Unpaid bills can prompt before the due date, on the due date and periodically overdue; subscriptions prompt around upcoming renewals. Budget alerts are limited to 80% and 100% milestones per cycle. They are grouped instead of showing an independent notification for every item.
+
+Delivery depends on notification permission, OEM battery policies and Android scheduling. Force-stopping the app can stop background operation until it is opened again. An inexact alarm is not an exact-time guarantee. [Android alarm scheduling documentation](https://developer.android.com/develop/background-work/services/alarms)
+
+## Accounting and accuracy
+
+- Amounts are integer paise. Purchases minus refunds form net expenses; loans, repayments and own transfers do not become ordinary income/expense.
+- A card purchase is an expense; paying its statement is cash out, not another expense. Card payment receipts without a known funding account are not converted into a fictitious bank account using the card's last four digits.
+- Bank-to-cash transfers change account balances without increasing expense totals. Bank and cash purchases reduce the appropriate account.
+- Account balances use the opening/corrected balance plus later recorded movements, or the latest available SMS balance snapshot plus movements after that snapshot. Missing history and unassigned accounts need correction; the app does not connect to a bank-balance API.
+- Incoming payments require a purpose choice; an account credit is not automatically salary. Matching a repayment or bill updates the original record instead of creating a second bank movement.
+- Unresolved possible duplicates remain visible in Activity but do not inflate totals. Ambiguous matches require a decision. Matching is conservative, not guaranteed across every bank format.
+- Subscription predictions do not add transactions. A real captured/linked payment advances the schedule, including supported early-renewal cases. Weekly and month-end dates retain their intended anchor.
+- Transfers, repayments, bills and bulk changes are checked against the complete ledger. Deleting a loan that still has repayments is rejected unless the dependent repayments are also correctly handled.
+
+## Backup details and privacy
+
+Backup files use AES-256-GCM with a random salt/nonce and PBKDF2-HMAC-SHA256 password derivation, then authenticated decryption before import. The password is not stored. Wrong passwords, modified ciphertext and oversized files are rejected before any database replacement. A forgotten password cannot be recovered.
+
+Restore replaces the current dataset after confirmation. A pre-restore safety copy stays in private app storage, encrypted with the password entered for that restore; it can be exported from Backup & export afterward. Undo history is not included in exported backups. Deleted-record tombstones and capture fingerprints can remain for Undo/deduplication; they are not displayed in normal lists.
+
+No INTERNET permission, server, analytics SDK, advertising SDK or banking-login credential collection is added. Financial parsing and imported text processing stay on-device. Backup/CSV files are saved where the user chooses through Android's file picker; any selected third-party storage provider has its own data handling. Android automatic backup/device transfer is excluded. Uninstalling removes the app's private records.
+
+Notification access does not establish a full Gmail connection. The app does not read Gmail inbox history, silently fetch mail, or claim every bank notification is parseable. The email decoder handles common plain-text/HTML and base64/quoted-printable input; complex MIME messages may need relevant text pasted manually. Imported email is never rendered as executable HTML or loaded with remote images.
+
+Common English INR/Rs/₹ formats and alphanumeric bank SMS senders are supported. Unsupported/local-language messages, numeric sender formats, missing or truncated notifications and bank-specific variations can be missed or misclassified. Review categories and balances on a real phone before relying on automatic totals.
+
+Google Play distribution and approval for SMS access are separate from producing this APK. [Google's SMS-permission policy](https://support.google.com/googleplay/android-developer/answer/10208820?hl=en)
+
+## Build and checks
+
+Requires JDK 17+, Android SDK platform 35, and an updated WebView on the test phone. Set `JAVA_HOME` and `ANDROID_HOME`, then:
+
+```powershell
+.\gradlew.bat :app:assembleDebug :app:lintDebug
+node tests/core.test.cjs
+node tests/finance-v3.test.cjs
+```
+
+APK: `app/build/outputs/apk/debug/app-debug.apk`. The runtime has no third-party application dependencies; it uses native Java/SQLite/services and local WebView assets `finance.js`, `app-v3.js` and `style.css`.
+
+Additional native domain tests use the standard JSON-java jar only on the desktop test classpath, not in the APK. Download `org.json:json:20240303` from Maven Central, compile `Ledger`, `SmsParser`, `NoticeParser`, `EmailText`, `BackupCipher`, `MutationGuard`, `CaptureMatcher`, `ParserTest` and `UpgradeTest`, then run the two test mains. Use `npm ci`, `npx playwright install chromium`, then `npm test` to run all 192 desktop checks. The UI runner starts a local server on port 8774 and closes it afterward. See [Testing](TESTING.md) for reproducible commands.
+
+Validation covers salary-cycle edges, month-end renewals, ATM/cash/card accounting, partial/linked repayments, conservative duplicate matches, backup password/tamper handling, notes, bulk corrections/Undo, persistence, responsive layouts, dark mode, reduced motion and native-bridge UI contracts.
+
+No Android phone was connected during development. The APK build, lint, desktop native-domain checks and browser UI checks do not establish real-device SMS delivery, Gmail/bank notification contents, background alarm timing, OEM battery behaviour, the Android document picker or an installed upgrade/restore. Those device checks remain to be performed. No phone was installed or modified automatically.

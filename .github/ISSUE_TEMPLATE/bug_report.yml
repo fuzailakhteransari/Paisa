@@ -1,0 +1,23 @@
+name: Bug report
+description: Report a reproducible problem with Paisa.
+title: "[Bug] "
+body:
+  - type: input
+    id: version
+    attributes:
+      label: App and Android version
+      placeholder: Paisa 0.3.1 / Android 15
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Include what you expected and what actually happened.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Sanitized example or screenshot
+      description: Remove names, phone numbers, account details, references and OTPs. Use fictional amounts and identities where possible. Never attach a real backup or database.

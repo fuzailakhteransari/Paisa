@@ -1,0 +1,24 @@
+const assert=require('node:assert/strict'),C=require('../app/src/main/assets/finance.js');let checks=0;
+const eq=(a,b,label)=>{assert.deepEqual(a,b,label);checks++;},throws=(fn,label)=>{assert.throws(fn,undefined,label);checks++;};
+const d=(y,m,n)=>+new Date(y,m-1,n,12),when=d(2026,11,18),e=(id,kind,amount,extra={})=>({id,kind,amount,date:when,title:id,category:'Food',person:'',account:'Bank',accountId:'bank',...extra});
+for(const [y,m,date,start,from,to] of [[2026,11,18,25,'2026-10-25','2026-11-25'],[2026,11,25,25,'2026-11-25','2026-12-25'],[2024,2,28,31,'2024-01-31','2024-02-29'],[2024,2,29,31,'2024-02-29','2024-03-31'],[2026,1,1,25,'2025-12-25','2026-01-25']]){const r=C.range('month',d(y,m,date),start);eq(r.map(C.day),[from,to],'salary-cycle boundary');}
+const accounts=[{id:'bank',name:'Bank',type:'bank',opening:1000000,openingAt:0},{id:'cash',name:'Cash',type:'cash',opening:0,openingAt:0},{id:'card',name:'Credit card',type:'credit',opening:0,openingAt:0}];
+const rows=[e('food','expense',20000),e('atm','transfer',50000,{toAccountId:'cash'}),e('cash-spend','expense',10000,{accountId:'cash',account:'Cash'}),e('card-buy','expense',30000,{accountId:'card',account:'Credit card'}),e('card-pay','card_payment',30000,{toAccountId:'card'})];
+eq(C.stats(rows,'month',when,{},accounts).expense,60000,'ATM not an expense');eq(C.stats(rows,'month',when,{},accounts).moneyOut,60000,'card payment is not a second expense');
+eq(C.balance(accounts[0],rows).amount,900000,'bank balance');eq(C.balance(accounts[1],rows).amount,40000,'cash left');eq(C.balance(accounts[2],rows).amount,0,'card paid');
+eq(C.balance({...accounts[0],snapshot:900000,snapshotAt:when},[...rows,e('later','income',5000,{date:when+1})]).amount,905000,'snapshot includes original transaction only once');
+const loans=[e('l1','lend',50000,{person:'Alice',date:when-2}),e('l2','lend',70000,{person:'Alice',date:when-1}),e('r2','receive',30000,{person:'Alice',loanId:'l2'}),e('old-repay','receive',10000,{person:'Alice'})];
+eq(C.loanPositions(loans).map(l=>[l.id,l.remaining]),[['l1',40000],['l2',40000]],'linked loan first, legacy repayments allocated FIFO');
+eq(C.stats(loans,'month',when).income,0,'repayment is not salary');eq(C.debts(loans)[0].receive,80000,'remaining across loans');
+throws(()=>C.loanPositions([...loans,e('bad','receive',50000,{person:'Alice',loanId:'l2'})]),'oversettlement');
+throws(()=>C.loanPositions(loans.filter(e=>e.id!=='l2')),'delete linked original rejected');
+throws(()=>C.loanPositions([...loans,e('wrong','receive',1000,{person:'Bob',loanId:'l1'})]),'wrong person link rejected');
+eq(C.stats([...rows,e('possible','expense',20000,{duplicateOf:'food'})],'month',when).expense,60000,'unresolved duplicate excluded');
+const state=C.normalize({entries:rows,accounts,settings:{monthBudget:100000,categoryBudgets:{Food:80000},cycleStartDay:1}});
+eq(C.budgetStatus(state,when).map(b=>[b.id,b.spent,b.left]),[['total',60000,40000],['Food',60000,20000]],'category and overall limits');
+eq(C.advanceDate('2026-01-31','monthly',31),'2026-02-28','clamped February');eq(C.advanceDate('2026-02-28','monthly',31),'2026-03-31','original anchor retained');eq(C.advanceDate('2024-02-29','yearly',29),'2025-02-28','leap renewal');eq(C.advanceDate('2026-12-28','weekly',28),'2027-01-04','weekly rollover');
+eq(C.nextDue({nextDue:'2026-01-31',cycle:'monthly',anchorDay:31},d(2026,2,28)),'2026-03-31','advance after recorded payment');
+eq(C.nextDue({nextDue:'2026-11-20',cycle:'monthly',anchorDay:20},when),'2026-12-20','early renewal counts as paid');
+const candidates=C.normalize({entries:[e('s1','expense',19900,{title:'Spotify',merchantKey:'name:spotify',date:when-30*86400000}),e('s2','expense',19900,{title:'Spotify',merchantKey:'name:spotify'})]});eq(C.recurringCandidates(candidates)[0].cycle,'monthly','recurrence suggestion');eq(candidates.entries.length,2,'suggestion does not create paid expenses');candidates.subscriptions.push({id:'sub',name:'Spotify',merchantKey:'name:spotify'});eq(C.recurringCandidates(candidates).length,0,'confirmed subscription not resuggested');
+eq(C.billRemaining({id:'utility',amount:100000},[e('electric','expense',25000,{billId:'utility'})]),75000,'utility partial payment');
+console.log(`${checks} finance upgrade checks passed`);

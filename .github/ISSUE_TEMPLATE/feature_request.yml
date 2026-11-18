@@ -1,0 +1,16 @@
+name: Feature request
+description: Suggest a useful improvement without adding everyday friction.
+title: "[Feature] "
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What should become easier?
+      description: Describe a concrete situation and the outcome you want.
+    validations:
+      required: true
+  - type: textarea
+    id: approach
+    attributes:
+      label: Suggested interaction
+      description: Explain where it could fit while keeping Home simple.

@@ -1,0 +1,14 @@
+{
+  "name": "paisa-android",
+  "version": "0.3.1",
+  "private": true,
+  "description": "Development checks for Paisa, an on-device Android expense tracker.",
+  "scripts": {
+    "test": "npm run test:core && npm run test:native && npm run test:ui",
+    "test:core": "node tests/core.test.cjs && node tests/finance-v3.test.cjs",
+    "test:native": "node scripts/test-native.cjs",
+    "test:ui": "node scripts/test-ui.cjs"
+  },
+  "engines": { "node": ">=22" },
+  "devDependencies": { "playwright": "1.62.1" }
+}
