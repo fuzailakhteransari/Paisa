@@ -2,7 +2,7 @@
 const assert=require('node:assert/strict'),path=require('node:path'),{spawnSync}=require('node:child_process');
 const C=require('../app/src/main/assets/finance.js');
 let checks=0;const eq=(a,b,label)=>{assert.deepEqual(a,b,label);checks++;};
-const date=(day,time='12:00:00')=>Date.parse(`2026-11-${day}T${time}+05:30`),now=date('19');
+const date=(day,time='12:00:00')=>Date.parse(`2026-11-${day}T${time}`),now=date('19');
 const entry=(id,kind,amount,note,extra={})=>({id,kind,amount,note,date:now,title:'Payment',category:'Other',person:'',account:'Bank',...extra});
 const rows=[
  entry('s1','expense',100000,'Alice at sample restaurant'),
