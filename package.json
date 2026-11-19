@@ -1,6 +1,6 @@
 {
   "name": "paisa-android",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "private": true,
   "description": "Local-first Android expense tracker with optional Google backup and web sync.",
   "scripts": {

@@ -26,3 +26,7 @@ Google identity is verified server-side. The Google subject owns each ledger; em
 Cloud snapshots include recorded transactions, notes, accounts, schedules, budgets, rules and capture fingerprints. Raw SMS/email bodies, OTPs and permission settings are excluded. Snapshots are compressed, integrity-checked and transmitted over HTTPS to an owner-private service. They are not end-to-end encrypted: authorized infrastructure operators can access stored financial data. Paisa uses a separate personal Vercel project, web origin, Google OAuth client and session secret. Its personal storage service does not use company business data or credentials.
 
 Disconnect preserves records and copies. Cloud deletion removes retained versions and revokes sessions; device caches and exported files are not remotely erased. Expired staging uploads are cleaned during cloud activity. Deletion from platform operational backups is not immediate. See the guide for recovery and device limits.
+
+## Public examples
+
+Repository examples and screenshots use synthetic identities, notes, account labels and amounts. They do not represent a user’s relationships or transactions. Private SMS regression input and its screenshots remain outside the repository, release archives and CI uploads. CI uploads an explicit list of synthetic preview images.

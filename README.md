@@ -4,13 +4,13 @@
   <p><strong>Your money, made clear.</strong></p>
   <p>An Android expense tracker built around less effort, useful reminders and a clean daily view.</p>
   <p>
-    <img alt="Version 0.7.1" src="https://img.shields.io/badge/version-0.7.1-174d40">
+    <img alt="Version 0.7.2" src="https://img.shields.io/badge/version-0.7.2-174d40">
     <img alt="Android 8 and above" src="https://img.shields.io/badge/Android-8%2B-174d40">
     <img alt="On-device processing" src="https://img.shields.io/badge/processing-on--device-174d40">
     <img alt="Cloud and actual-data checks" src="https://img.shields.io/badge/checks-passing-d8fa9a?labelColor=174d40">
   </p>
   <p>
-    <a href="https://github.com/fuzailakhteransari/Paisa/releases/tag/v0.7.1">Download Android build</a> ·
+    <a href="https://github.com/fuzailakhteransari/Paisa/releases/tag/v0.7.2">Download Android build</a> ·
     <a href="docs/USER_GUIDE.md">User guide</a> ·
     <a href="docs/TESTING.md">Build & test</a> ·
     <a href="CHANGELOG.md">Changelog</a>
@@ -76,7 +76,7 @@ After updating, use **Settings → Tracking & reminders → Import last 30 days*
 
 ## Install and set up
 
-1. Download `Paisa-0.7.1-debug.apk` from [Releases](https://github.com/fuzailakhteransari/Paisa/releases/tag/v0.7.1).
+1. Download `Paisa-0.7.2-debug.apk` from [Releases](https://github.com/fuzailakhteransari/Paisa/releases/tag/v0.7.2).
 2. Install on Android 8+ with an updated Android System WebView. Existing 0.1/0.2/0.3/0.3.1/0.3.2/0.4.0/0.5.1 users should install the matching signed update over the app, without uninstalling.
 3. Open **Settings → Tracking & reminders** to choose optional SMS/Gmail/bank-alert access.
 4. Set an opening balance under **Accounts** and an optional monthly limit under **Budgets**.

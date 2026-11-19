@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.7.2 — 2026-11-19
+
+- Replace user-derived contact names and note wording with synthetic identities, generic notes and fictional example amounts in public tests and previews. Regenerate documentation screenshots from synthetic data.
+- Limit CI preview uploads to named public screenshots. Remove older distributable assets and artifacts that may retain previous fixtures. Preserve local/private financial records and accounting behavior.
+
 ## 0.7.1 — 2026-11-19
 
 - Web follow-up: refresh available cloud copies for connected browsers that have not initialized sync yet. Returning to the PC or reloading now discovers a first phone backup without reconnecting Google; restore still needs explicit confirmation.

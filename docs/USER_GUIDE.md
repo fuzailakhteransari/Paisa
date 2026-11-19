@@ -1,10 +1,10 @@
-# Paisa 0.7.1 — user guide
+# Paisa 0.7.2 — user guide
 
 Android development build, 19 November 2026. The existing four main destinations remain Home, Activity, Loans and Bills. Accounts, Budgets, Subscriptions, Tracking and Backup are reached through Settings. Home adds only one small budget summary, and only after an overall budget is configured.
 
 ## Install or update
 
-Install **Paisa-0.7.1-debug.apk** on Android 8+ with an updated Android System WebView. Install over your existing Paisa build without uninstalling to retain existing records. The application ID stays `in.paisa.personal`, the version code increases to 11, and the signing certificate is checked against the earlier build. This is a development-signed APK, not a Play Store release.
+Install **Paisa-0.7.2-debug.apk** on Android 8+ with an updated Android System WebView. Install over your existing Paisa build without uninstalling to retain existing records. The application ID stays `in.paisa.personal`, the version code increases to 12, and the signing certificate is checked against the earlier build. This is a development-signed APK, not a Play Store release.
 
 All built-in interface copy is English. Your existing names, notes and descriptions are preserved as entered.
 
@@ -32,7 +32,7 @@ The selected range applies to Home spending/category totals, Activity rows, matc
 
 ## Features
 
-| Area | Behaviour in 0.7.1 |
+| Area | Behaviour in 0.7.2 |
 |---|---|
 | SMS capture | Supported bank/card transaction messages are processed locally. Import the last 30 days; already-seen messages are skipped, including fingerprints retained from earlier versions. |
 | Gmail email tracking | Optional automatic tracking from visible Gmail payment-email notifications. This does not sign in to Gmail, read the complete inbox, or fetch past email. Truncated/grouped/hidden alerts can be missed. |
@@ -110,7 +110,7 @@ No Android phone was connected during development. The APK build, lint, desktop 
 
 ## Recheck captured SMS after this update
 
-Install 0.7.1 over your existing release build without uninstalling. Open **Settings → Tracking & reminders → Import last 30 days** to recover supported missed alerts and recheck recent captures. The import covers the last 30 days, even though development checks use the complete approved backup.
+Install 0.7.2 over your existing release build without uninstalling. Open **Settings → Tracking & reminders → Import last 30 days** to recover supported missed alerts and recheck recent captures. The import covers the last 30 days, even though development checks use the complete approved backup.
 
 Only untouched pending captures can be automatically revised. Your reviewed notes, categories, loan links and other accounting choices remain protected. An older entry that is no longer recognized as a completed bank payment appears as **Confirm SMS entry**, outside totals. Compare the original message, then keep/edit it or remove it. Undo is available.
 
