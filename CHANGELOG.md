@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.7.0 — 2026-11-19
+
+- Completed optional Google account connection, explicit first backup/restore and the desktop web companion. Local mode remains the default.
+- Added hash-checked cloud copies, per-account server authorization, revision compare-and-swap, five recent versions and separate cloud deletion.
+- Merge independent phone/browser changes, preserve capture identities and Undo, queue offline edits, block conflicting fields for review and guard stale entry forms.
+- Keep tokens outside financial exports; use Android Keystore for native sync state and server-only browser cookies. Save a local safety copy before cloud replacement.
+- Added tab locking, account-cookie checks, phone pairing proof, atomic upload race checks and actual-data native/web interoperability and browser tests.
+- Kept the clean English interface and four destinations. Interactive Google login, installation and background behavior still require real-device acceptance.
+
 ## 0.6.0 — 2026-11-19
 
 - Added Settings → Account & sync, with Local only as the default and an optional Google backup & sync preference.

@@ -1,0 +1,11 @@
+const fs=require('node:fs'),path=require('node:path');
+const root=path.resolve(__dirname,'..'),out=path.resolve(process.argv[2]||path.join(root,'web','dist'));
+fs.mkdirSync(out,{recursive:true});
+const csp="default-src 'self'; script-src 'self' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://accounts.google.com/gsi/style; frame-src https://accounts.google.com; connect-src 'self' https://accounts.google.com; img-src 'self' data: https://*.googleusercontent.com; object-src 'none'; base-uri 'self'; form-action 'self'";
+let html=fs.readFileSync(path.join(root,'app/src/main/assets/index.html'),'utf8');
+html=html.replace(/<meta http-equiv="Content-Security-Policy" content="[^"]*">/,`<meta http-equiv="Content-Security-Policy" content="${csp}">`).replace('</head>','<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#f8f7f3"></head>').replace('<script src="app-v3.js"></script>','<script type="module" src="boot.js"></script>');
+if(!html.includes('src="boot.js"'))throw Error('Web entry script was not replaced');
+fs.writeFileSync(path.join(out,'index.html'),html);
+for(const name of ['finance.js','sync-core.js','app-v3.js','style.css'])fs.copyFileSync(path.join(root,'app/src/main/assets',name),path.join(out,name));
+for(const name of ['boot.js','cloud-client.js','sw.js','manifest.webmanifest'])fs.copyFileSync(path.join(root,'web',name),path.join(out,name));
+console.log('Prepared Paisa web companion assets.');

@@ -10,7 +10,7 @@ function run(name,args){const executable=process.env.JAVA_HOME?path.join(process
  }
  if(crypto.createHash('sha256').update(bytes).digest('hex')!==digest)throw Error('JSON-java checksum mismatch');await fs.writeFile(jar,bytes);
  const out=path.join(root,'tests','build');await fs.mkdir(out,{recursive:true});
- const classes=['Ledger','PreviousSmsParser','SmsParser','NoticeParser','BackupCipher','EmailText','MutationGuard','CaptureMatcher','CapturePolicy','TransferLink'].map(name=>`app/src/main/java/in/paisa/personal/${name}.java`);
+ const classes=['Ledger','PreviousSmsParser','SmsParser','NoticeParser','BackupCipher','EmailText','MutationGuard','CaptureMatcher','CapturePolicy','TransferLink','SyncCore'].map(name=>`app/src/main/java/in/paisa/personal/${name}.java`);
  run('javac',['-encoding','UTF-8','-cp',jar,'-d',out,...classes,'tests/ParserTest.java','tests/UpgradeTest.java','tests/CardSmsTest.java']);
  for(const name of ['ParserTest','UpgradeTest','CardSmsTest'])run('java',['-cp',[out,jar].join(path.delimiter),`in.paisa.personal.${name}`]);
 })().catch(error=>{console.error(error.message);process.exitCode=1;});

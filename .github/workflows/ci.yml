@@ -40,6 +40,8 @@ jobs:
         run: npm run test:core
       - name: Check native domain rules
         run: npm run test:native
+      - name: Check cloud storage and auth rules
+        run: npm run test:cloud
       - name: Report private-corpus availability
         run: npm run test:real
       - name: Assemble APK and run Android lint
@@ -71,7 +73,7 @@ jobs:
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
       - name: Run UI and payment flows
-        run: npm run test:ui
+        run: npm run test:ui && npm run test:web
       - name: Upload UI previews
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7

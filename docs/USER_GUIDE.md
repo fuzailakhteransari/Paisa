@@ -1,10 +1,10 @@
-# Paisa 0.6.0 — user guide
+# Paisa 0.7.0 — user guide
 
 Android development build, 19 November 2026. The existing four main destinations remain Home, Activity, Loans and Bills. Accounts, Budgets, Subscriptions, Tracking and Backup are reached through Settings. Home adds only one small budget summary, and only after an overall budget is configured.
 
 ## Install or update
 
-Install **Paisa-0.6.0-debug.apk** on Android 8+ with an updated Android System WebView. Install over 0.1/0.2/0.3/0.3.1/0.3.2 without uninstalling to retain existing records. The application ID stays `in.paisa.personal`, the version code increases to 6, and the signing certificate is checked against the earlier build. This is a development-signed APK, not a Play Store release.
+Install **Paisa-0.7.0-debug.apk** on Android 8+ with an updated Android System WebView. Install over your existing Paisa build without uninstalling to retain existing records. The application ID stays `in.paisa.personal`, the version code increases to 10, and the signing certificate is checked against the earlier build. This is a development-signed APK, not a Play Store release.
 
 All built-in interface copy is English. Your existing names, notes and descriptions are preserved as entered.
 
@@ -32,7 +32,7 @@ The selected range applies to Home spending/category totals, Activity rows, matc
 
 ## Features
 
-| Area | Behaviour in 0.6.0 |
+| Area | Behaviour in 0.7.0 |
 |---|---|
 | SMS capture | Supported bank/card transaction messages are processed locally. Import the last 30 days; already-seen messages are skipped, including fingerprints retained from earlier versions. |
 | Gmail email tracking | Optional automatic tracking from visible Gmail payment-email notifications. This does not sign in to Gmail, read the complete inbox, or fetch past email. Truncated/grouped/hidden alerts can be missed. |
@@ -82,7 +82,7 @@ Backup files use AES-256-GCM with a random salt/nonce and PBKDF2-HMAC-SHA256 pas
 
 Restore replaces the current dataset after confirmation. A pre-restore safety copy stays in private app storage, encrypted with the password entered for that restore; it can be exported from Backup & export afterward. Undo history is not included in exported backups. Deleted-record tombstones and capture fingerprints can remain for Undo/deduplication; they are not displayed in normal lists.
 
-No INTERNET permission, server, analytics SDK, advertising SDK or banking-login credential collection is added. Financial parsing and imported text processing stay on-device. Backup/CSV files are saved where the user chooses through Android's file picker; any selected third-party storage provider has its own data handling. Android automatic backup/device transfer is excluded. Uninstalling removes the app's private records.
+Internet access is used after you explicitly start Google connection or cloud sync. There is no analytics SDK, advertising SDK or banking-login credential collection. Financial parsing and imported text processing stay on-device. Backup/CSV files are saved where the user chooses through Android's file picker; any selected third-party storage provider has its own data handling. Android automatic backup/device transfer is excluded. Uninstalling removes the app's private records.
 
 Notification access does not establish a full Gmail connection. The app does not read Gmail inbox history, silently fetch mail, or claim every bank notification is parseable. The email decoder handles common plain-text/HTML and base64/quoted-printable input; complex MIME messages may need relevant text pasted manually. Imported email is never rendered as executable HTML or loaded with remote images.
 
@@ -110,7 +110,7 @@ No Android phone was connected during development. The APK build, lint, desktop 
 
 ## Recheck captured SMS after this update
 
-Install 0.6.0 over your existing release build without uninstalling. Open **Settings → Tracking & reminders → Import last 30 days** to recover supported missed alerts and recheck recent captures. The import covers the last 30 days, even though development checks use the complete approved backup.
+Install 0.7.0 over your existing release build without uninstalling. Open **Settings → Tracking & reminders → Import last 30 days** to recover supported missed alerts and recheck recent captures. The import covers the last 30 days, even though development checks use the complete approved backup.
 
 Only untouched pending captures can be automatically revised. Your reviewed notes, categories, loan links and other accounting choices remain protected. An older entry that is no longer recognized as a completed bank payment appears as **Confirm SMS entry**, outside totals. Compare the original message, then keep/edit it or remove it. Undo is available.
 
@@ -118,8 +118,25 @@ When a debit and credit in different bank accounts have a unique matching refere
 
 ATM withdrawals move money to Cash. Successful UPI Lite top-ups move money to the UPI Lite wallet; record spending from that wallet when there is no separate supported alert. Credit-card payment receipts reduce the card liability without becoming salary/income; review the funding account when the receipt does not identify it. Masked payees still need your note or category choice.
 
-## Account & sync — first delivery
+## Optional Google backup and web sync
 
-Open **Settings → Account & sync**. **Local only** is selected by default and works without an account. Choose **Google backup & sync** and press **Save preference** if you want that option when account setup becomes available. This choice saves a preference only: this version always shows **Local mode active**, **Not connected** and **Not enabled** for the account/Google backup. The Google sign-in button is disabled.
+Local only remains the default. Entry, capture, notes, budgets and reports work without login. Saving the Google preference alone does not connect or upload anything.
 
-Choosing either preference keeps existing transactions, notes, balances, budgets and category rules intact. No data is uploaded. Use **Open backup & export** for the existing manual encrypted backup or CSV flow. Google sign-in/cloud backup and desktop two-way sync are separate later deliveries.
+1. On Android open **Settings → Account & sync → Continue with Google**. A system browser opens. Match the six-digit code, sign in and explicitly approve that phone. Return to Paisa.
+2. Check the displayed Google email. Choose **Back up this device** to upload your ledger. If the account already has records, choose **Restore cloud copy**. Replacement needs confirmation and saves an encrypted on-device safety copy first.
+3. On your computer open [Paisa web](https://dir-dash-app.vercel.app/paisa/). In Account & sync, sign in with the same Google account and choose **Restore cloud copy**. Existing browser records are saved before replacement.
+4. Edit payments, categories, notes, budgets, accounts or schedules on either device. **Sync now** is available in Settings. While open, checks run about every 30 seconds and after edits. Android background checks depend on its network and battery scheduling.
+
+Offline edits stay on that device. Reconnect and keep Paisa open to merge them. Last confirmed sync appears in Settings. If the same field changes on both devices, compare the conflict details and choose device or cloud for the displayed conflicts. Independent changes still merge. Reopen a stale entry form before saving. One browser tab can edit; another tab is read-only until the first is closed and the page reloaded.
+
+**Disconnect** stops sync on that device and keeps local records and cloud copies. Reconnect the same account and **Resume sync** to merge offline changes. Another account cannot upload the previous account's ledger; deliberately open its cached browser workspace, restore it or start empty.
+
+**Saved cloud copies** retains up to five recent revisions. Restore needs confirmation and preserves current local records. **Delete cloud copies** removes saved versions and signs synced devices out; their local records remain.
+
+Use **Export pre-sync safety copy** to create a password-encrypted recovery file. Browser exports are compatible with Android file restore. Browser file import is not included. Android manual file restore stops Google sync first. Clearing browser site data can erase cached edits; keep an encrypted export when needed.
+
+Raw SMS/email bodies, OTPs and device permissions are excluded from cloud snapshots. Recorded descriptions, account labels, notes, amounts, links, budgets, rules and capture fingerprints do sync. Cloud storage uses HTTPS and authenticated private service access and is **not end-to-end encrypted**. Google login asks for identity, not Gmail inbox or banking access.
+
+Desktop release checks establish local data behavior, API publication, Android build and lint. Actual Google account selection, phone installation, return-to-app and Android background delivery require an interactive real-phone check.
+
+Live OAuth setup check: Google currently rejects the canonical host with “origin is not allowed”. The existing web OAuth client must authorize `https://dir-dash-app.vercel.app` in Google Cloud Console → Google Auth Platform → Clients → Authorized JavaScript origins. The client ID is supplied by the existing host configuration. This external setting is required before live Google connection works; local mode and localhost tests do not depend on it.

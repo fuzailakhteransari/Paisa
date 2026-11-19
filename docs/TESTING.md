@@ -75,3 +75,11 @@ The 0.6.0 local verification includes a successful APK build and zero lint error
 ## 0.6.0 mode-control validation
 
 The approved actual ledger is used to change Local/Google preferences, reload the app, return to Local, compare every financial collection and category rule, verify the Google action remains disabled, observe zero external requests, verify small-screen dark layout and open manual export. The native actual-data runner verifies the optional setting, rejects unknown modes and encrypts/restores the preference with the complete ledger. Google OAuth, server backup and desktop sync are outside this first delivery and are not claimed as tested.
+
+## 0.7.0 cloud and companion checks
+
+`npm run test:cloud` checks local SQLite/D1 ownership, CSRF/nonce, stale upload publication, part/abort races, pairing revocation and actual-data merges. `scripts/test-sync-native.cjs --required` checks actual financial states and conflict counts against both Java and JavaScript implementations. `npm run test:web -- --required` exercises two isolated browsers against a localhost-only RPC with test-injected Google identity, not the real Google provider. It checks first backup, restore, independent edits, offline reload, conflicts, tab locking, account changes and disconnect. The approved corpus remains outside the repository. CI tests an empty workspace and explicitly skips private coverage.
+
+The live web publication and private service authorization can be probed without financial records. Live Google account interaction and Android installation/pairing/background scheduling are still unverified by desktop tests. The native parser is unchanged in this release.
+
+Live OAuth setup check: Google currently rejects the canonical host with “origin is not allowed”. The existing web OAuth client must authorize `https://dir-dash-app.vercel.app` in Google Cloud Console → Google Auth Platform → Clients → Authorized JavaScript origins. The client ID is supplied by the existing host configuration. This external setting is required before live Google connection works; local mode and localhost tests do not depend on it.

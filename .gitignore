@@ -24,3 +24,4 @@ test-results/
 private-data/
 .paisa-local.json
 sms-*.xml
+web/dist/

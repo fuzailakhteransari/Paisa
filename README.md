@@ -4,22 +4,22 @@
   <p><strong>Your money, made clear.</strong></p>
   <p>An Android expense tracker built around less effort, useful reminders and a clean daily view.</p>
   <p>
-    <img alt="Version 0.6.0" src="https://img.shields.io/badge/version-0.6.0-174d40">
+    <img alt="Version 0.7.0" src="https://img.shields.io/badge/version-0.7.0-174d40">
     <img alt="Android 8 and above" src="https://img.shields.io/badge/Android-8%2B-174d40">
     <img alt="On-device processing" src="https://img.shields.io/badge/processing-on--device-174d40">
-    <img alt="291 automated checks" src="https://img.shields.io/badge/checks-291-d8fa9a?labelColor=174d40">
+    <img alt="Cloud and actual-data checks" src="https://img.shields.io/badge/checks-passing-d8fa9a?labelColor=174d40">
   </p>
   <p>
-    <a href="https://github.com/fuzailakhteransari/Paisa/releases/tag/v0.6.0">Download Android build</a> ·
+    <a href="https://github.com/fuzailakhteransari/Paisa/releases/tag/v0.7.0">Download Android build</a> ·
     <a href="docs/USER_GUIDE.md">User guide</a> ·
     <a href="docs/TESTING.md">Build & test</a> ·
     <a href="CHANGELOG.md">Changelog</a>
   </p>
 </div>
 
-## Optional sync — first delivery
+## Optional Google sync and web companion
 
-**0.6.0 adds the mode controls only.** In Settings → Account & sync, Local only is the default. You can save a Google backup & sync preference, but Google sign-in and cloud sync are not available in this version. Records remain local and the sign-in button stays disabled. Manual encrypted backup and CSV remain available. [Three-part scope](docs/CLOUD_SYNC.md)
+**Use Paisa locally, or connect Google to manage the same records on your phone and computer.** Open Settings → Account & sync, connect Google, then explicitly choose a first backup or restore. Signing in alone never uploads your ledger. [Open Paisa web](https://dir-dash-app.vercel.app/paisa/) · [Sync design and setup](docs/CLOUD_SYNC.md)
 
 <p align="center"><img src="docs/images/account-sync.png" width="260" alt="Account and sync preferences with Local mode active and Google not connected"></p>
 
@@ -45,6 +45,7 @@ See spending today, this week or in your own monthly cycle. Review a captured pa
 | Accounts & cash | Bank/card/cash accounts, account-wise history, opening balances and ATM-to-cash transfers |
 | Loans | Money lent/borrowed, partial repayments and linking an existing captured payment |
 | Bills & subscriptions | Statements, utility bills, renewal schedules, payment linking and reminders |
+| Optional cloud | Google identity, confirmed backups, browser editing, offline changes, conflict review and five recent cloud versions |
 | Corrections & recovery | Bulk category correction/delete, conflict-aware Undo, CSV and full encrypted backup/restore |
 
 **Gmail tracking uses visible notifications or shared/imported email text.** It does not sign into Gmail or synchronize the complete inbox. Unsupported bank formats and truncated alerts need review. Account balances reflect recorded data, rather than a live banking connection.
@@ -75,7 +76,7 @@ After updating, use **Settings → Tracking & reminders → Import last 30 days*
 
 ## Install and set up
 
-1. Download `Paisa-0.6.0-debug.apk` from [Releases](https://github.com/fuzailakhteransari/Paisa/releases/tag/v0.6.0).
+1. Download `Paisa-0.7.0-debug.apk` from [Releases](https://github.com/fuzailakhteransari/Paisa/releases/tag/v0.7.0).
 2. Install on Android 8+ with an updated Android System WebView. Existing 0.1/0.2/0.3/0.3.1/0.3.2/0.4.0/0.5.1 users should install the matching signed update over the app, without uninstalling.
 3. Open **Settings → Tracking & reminders** to choose optional SMS/Gmail/bank-alert access.
 4. Set an opening balance under **Accounts** and an optional monthly limit under **Budgets**.
@@ -85,7 +86,7 @@ This is a development-signed build. Real-device SMS delivery, background reminde
 
 ## Privacy by design
 
-- Financial parsing runs on the phone. The APK has no INTERNET permission, server, analytics or ad SDK.
+- Financial parsing runs on the phone. Local mode makes no cloud requests. Optional Google sync uses the Paisa service; there is no analytics or ad SDK.
 - SMS and Android notification access are optional. Manual tracking works without them.
 - Selected-app notifications are filtered locally; imported email text is not retained.
 - Full backups use authenticated password encryption. CSV exports are readable analysis files.
@@ -132,3 +133,5 @@ tests/              Native domain and browser regression checks
 Native **Java + SQLite**, local **HTML/CSS/JavaScript**, no third-party runtime dependencies. Playwright and JSON-java are used only for desktop tests.
 
 [Architecture](docs/ARCHITECTURE.md) · [Contributing](CONTRIBUTING.md) · [Security reports](SECURITY.md)
+
+Live OAuth setup check: Google currently rejects the canonical host with “origin is not allowed”. The existing web OAuth client must authorize `https://dir-dash-app.vercel.app` in Google Cloud Console → Google Auth Platform → Clients → Authorized JavaScript origins. The client ID is supplied by the existing host configuration. This external setting is required before live Google connection works; local mode and localhost tests do not depend on it.

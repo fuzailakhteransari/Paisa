@@ -8,7 +8,8 @@ import java.util.*;
 
 public class Store extends SQLiteOpenHelper {
     private static final Set<String> TABLES=new HashSet<>(Arrays.asList("entries","bills","accounts","subscriptions","meta","rules"));
-    public Store(Context c) { super(c, "paisa.db", null, 2); initialise(c); }
+    private final Context appContext;
+    public Store(Context c) { super(c, "paisa.db", null, 2); appContext=c.getApplicationContext();initialise(c); }
     @Override public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE entries (id TEXT PRIMARY KEY, payload TEXT NOT NULL, fingerprint TEXT UNIQUE)");
         db.execSQL("CREATE TABLE bills (id TEXT PRIMARY KEY, payload TEXT NOT NULL)");
@@ -43,15 +44,15 @@ public class Store extends SQLiteOpenHelper {
     }
     public synchronized JSONObject get(String table,String id){String raw=raw(table,id);if(raw==null)return null;try{return new JSONObject(raw);}catch(JSONException e){throw new IllegalStateException("Invalid local record",e);}}
     private String raw(String table,String id){if(!TABLES.contains(table))throw new IllegalArgumentException("Unknown table");try(Cursor c=getReadableDatabase().query(table,new String[]{"payload"},"id=?",new String[]{id},null,null,null)){return c.moveToFirst()?c.getString(0):null;}}
-    public synchronized void put(String table,JSONObject row)throws JSONException {if(!TABLES.contains(table))throw new IllegalArgumentException("Unknown table");ContentValues v=new ContentValues();v.put("id",row.getString("id"));v.put("payload",row.toString());if(get(table,row.getString("id"))==null)getWritableDatabase().insertOrThrow(table,null,v);else getWritableDatabase().update(table,v,"id=?",new String[]{row.getString("id")});}
+    public synchronized void put(String table,JSONObject row)throws JSONException {if(!TABLES.contains(table))throw new IllegalArgumentException("Unknown table");ContentValues v=new ContentValues();v.put("id",row.getString("id"));v.put("payload",row.toString());if(get(table,row.getString("id"))==null)getWritableDatabase().insertOrThrow(table,null,v);else getWritableDatabase().update(table,v,"id=?",new String[]{row.getString("id")});CloudJobs.changed(appContext);}
     public synchronized JSONObject settings(){JSONObject row=get("meta","settings");if(row!=null)return row;try{return new JSONObject().put("id","settings").put("syncPreference","local").put("cycleStartDay",1).put("monthBudget",0).put("categoryBudgets",new JSONObject()).put("reminders",true).put("captureNotifications",false).put("emailApps",new JSONArray().put("com.google.android.gm")).put("bankApps",new JSONArray());}catch(JSONException e){throw new IllegalStateException(e);}}
     public synchronized void setSettings(JSONObject settings)throws JSONException{settings.put("id","settings");put("meta",settings);}
     public synchronized JSONObject snapshot()throws JSONException{return new JSONObject().put("version",3).put("entries",read("entries",true)).put("bills",bills()).put("accounts",accounts()).put("subscriptions",subscriptions()).put("settings",settings()).put("rules",read("rules",false));}
     public synchronized String learned(String key){JSONObject r=key.isEmpty()?null:get("rules",key);return r==null?"":r.optString("category");}
-    public synchronized void remember(String key,String category,boolean on)throws JSONException{if(key.isEmpty())return;if(on)put("rules",new JSONObject().put("id",key).put("category",category));else getWritableDatabase().delete("rules","id=?",new String[]{key});}
+    public synchronized void remember(String key,String category,boolean on)throws JSONException{if(key.isEmpty())return;if(on)put("rules",new JSONObject().put("id",key).put("category",category));else {getWritableDatabase().delete("rules","id=?",new String[]{key});CloudJobs.changed(appContext);}}
     public synchronized boolean seen(String fingerprint){try(Cursor c=getReadableDatabase().query("seen",new String[]{"entryId"},"fingerprint=?",new String[]{fingerprint},null,null,null)){if(c.moveToFirst())return true;}if(fingerprint.startsWith("SMS:"))try(Cursor c=getReadableDatabase().query("entries",new String[]{"id"},"fingerprint=?",new String[]{fingerprint.substring(4)},null,null,null)){return c.moveToFirst();}return false;}
     public synchronized String seenEntryId(String fingerprint){try(Cursor c=getReadableDatabase().query("seen",new String[]{"entryId"},"fingerprint=?",new String[]{fingerprint},null,null,null)){if(c.moveToFirst())return c.getString(0);}if(fingerprint.startsWith("SMS:"))try(Cursor c=getReadableDatabase().query("entries",new String[]{"id"},"fingerprint=?",new String[]{fingerprint.substring(4)},null,null,null)){if(c.moveToFirst())return c.getString(0);}return null;}
-    public synchronized void markSeen(String fp,String id){ContentValues v=new ContentValues();v.put("fingerprint",fp);v.put("entryId",id);getWritableDatabase().insertWithOnConflict("seen",null,v,SQLiteDatabase.CONFLICT_IGNORE);}
+    public synchronized void markSeen(String fp,String id){ContentValues v=new ContentValues();v.put("fingerprint",fp);v.put("entryId",id);if(getWritableDatabase().insertWithOnConflict("seen",null,v,SQLiteDatabase.CONFLICT_IGNORE)!=-1)CloudJobs.changed(appContext);}
     public synchronized JSONObject commit(String label,JSONArray patches)throws Exception{
         SQLiteDatabase db=getWritableDatabase();db.beginTransaction();
         try {
@@ -73,6 +74,18 @@ public class Store extends SQLiteOpenHelper {
     public synchronized void restore(JSONObject state)throws Exception{
         if(state.optInt("version")!=3)throw new IllegalArgumentException("Unsupported backup version");Ledger.validate(state);JSONArray rules=state.getJSONArray("rules");for(int i=0;i<rules.length();i++)if(rules.getJSONObject(i).getString("id").length()>120||rules.getJSONObject(i).optString("category").length()>40)throw new IllegalArgumentException("Invalid category rule");SQLiteDatabase db=getWritableDatabase();db.beginTransaction();try{for(String table:Arrays.asList("entries","bills","accounts","subscriptions","rules")){db.delete(table,null,null);JSONArray list=state.getJSONArray(table);for(int i=0;i<list.length();i++)put(table,list.getJSONObject(i));}setSettings(state.getJSONObject("settings").put("migratedV3",true));db.delete("undo_log",null,null);db.delete("seen",null,null);if(state.has("seen")){JSONArray seen=state.getJSONArray("seen");for(int i=0;i<seen.length();i++){JSONObject r=seen.getJSONObject(i);markSeen(r.getString("fingerprint"),r.getString("entryId"));}}db.setTransactionSuccessful();}finally{db.endTransaction();}
     }
+    public synchronized void applyCloud(JSONObject expected,JSONObject desired)throws Exception{
+        SQLiteDatabase db=getWritableDatabase();db.beginTransaction();Boolean oldFlag=CloudJobs.APPLYING.get();CloudJobs.APPLYING.set(true);
+        try{JSONObject current=backup(),before=new JSONObject(expected.toString());current.remove("createdAt");before.remove("createdAt");if(!MutationGuard.unchanged(current.toString(),before.toString()))throw new java.util.ConcurrentModificationException("Local records changed during sync");Ledger.validate(desired);
+            for(String table:SyncCore.TABLES){JSONArray next=desired.getJSONArray(table),old=read(table,true);Map<String,JSONObject> byId=new HashMap<>();for(int i=0;i<next.length();i++){JSONObject row=next.getJSONObject(i);byId.put(row.getString("id"),row);JSONObject previous=get(table,row.getString("id"));if(previous==null||!SyncCore.same(previous,row))put(table,row);}for(int i=0;i<old.length();i++){String id=old.getJSONObject(i).getString("id");if(!byId.containsKey(id))db.delete(table,"id=?",new String[]{id});}}
+            if(!SyncCore.same(settings(),desired.getJSONObject("settings")))setSettings(desired.getJSONObject("settings"));JSONArray identities=desired.optJSONArray("seen");if(identities!=null)for(int i=0;i<identities.length();i++){JSONObject identity=identities.getJSONObject(i);markSeen(identity.getString("fingerprint"),identity.getString("entryId"));}
+            // Keep Undo history; its existing conflict guard rejects later remote edits.
+            db.setTransactionSuccessful();
+        }finally{if(oldFlag==null)CloudJobs.APPLYING.remove();else CloudJobs.APPLYING.set(oldFlag);db.endTransaction();}
+    }
+    public synchronized void restoreCloudWithMarker(JSONObject expected,JSONObject restored,String marker)throws Exception{
+        SQLiteDatabase db=getWritableDatabase();db.beginTransaction();try{restoreIfUnchanged(expected,restored);put("meta",new JSONObject().put("id","cloud-restore-marker").put("value",marker));db.setTransactionSuccessful();}finally{db.endTransaction();}
+    }
     public synchronized void restoreIfUnchanged(JSONObject expected,JSONObject restored)throws Exception{SQLiteDatabase db=getWritableDatabase();db.beginTransaction();try{JSONObject current=backup(),before=new JSONObject(expected.toString());current.remove("createdAt");before.remove("createdAt");if(!MutationGuard.unchanged(current.toString(),before.toString()))throw new java.util.ConcurrentModificationException("New activity arrived during restore");restore(restored);db.setTransactionSuccessful();}finally{db.endTransaction();}}
     public synchronized JSONObject backup()throws JSONException{SQLiteDatabase db=getWritableDatabase();db.beginTransactionNonExclusive();try{JSONObject state=snapshot();JSONArray out=new JSONArray();try(Cursor c=getReadableDatabase().query("seen",new String[]{"fingerprint","entryId"},null,null,null,null,null)){while(c.moveToNext())out.put(new JSONObject().put("fingerprint",c.getString(0)).put("entryId",c.getString(1)));}try(Cursor c=getReadableDatabase().query("entries",new String[]{"fingerprint","id"},"fingerprint IS NOT NULL",null,null,null,null)){while(c.moveToNext())out.put(new JSONObject().put("fingerprint","SMS:"+c.getString(0)).put("entryId",c.getString(1)));}db.setTransactionSuccessful();return state.put("seen",out).put("createdAt",System.currentTimeMillis());}finally{db.endTransaction();}}
     public synchronized JSONObject find(String id) {
@@ -84,7 +97,7 @@ public class Store extends SQLiteOpenHelper {
         if(item.optString("id").isEmpty()) item.put("id",UUID.randomUUID().toString());
         ContentValues v=new ContentValues(); v.put("id",item.getString("id")); v.put("payload",item.toString());
         if(fingerprint!=null) v.put("fingerprint",fingerprint);
-        return getWritableDatabase().insertWithOnConflict("entries",null,v,SQLiteDatabase.CONFLICT_IGNORE)!=-1;
+        boolean added=getWritableDatabase().insertWithOnConflict("entries",null,v,SQLiteDatabase.CONFLICT_IGNORE)!=-1;if(added)CloudJobs.changed(appContext);return added;
     }
     public synchronized void update(JSONObject item) throws JSONException {
         if(find(item.getString("id"))==null) throw new IllegalArgumentException("Entry not found");
