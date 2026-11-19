@@ -1,10 +1,10 @@
-# Paisa 0.4.0 — user guide
+# Paisa 0.5.0 — user guide
 
 Android development build, 19 November 2026. The existing four main destinations remain Home, Activity, Loans and Bills. Accounts, Budgets, Subscriptions, Tracking and Backup are reached through Settings. Home adds only one small budget summary, and only after an overall budget is configured.
 
 ## Install or update
 
-Install **Paisa-0.4.0-debug.apk** on Android 8+ with an updated Android System WebView. Install over 0.1/0.2/0.3/0.3.1/0.3.2 without uninstalling to retain existing records. The application ID stays `in.paisa.personal`, the version code increases to 6, and the signing certificate is checked against the earlier build. This is a development-signed APK, not a Play Store release.
+Install **Paisa-0.5.0-debug.apk** on Android 8+ with an updated Android System WebView. Install over 0.1/0.2/0.3/0.3.1/0.3.2 without uninstalling to retain existing records. The application ID stays `in.paisa.personal`, the version code increases to 6, and the signing certificate is checked against the earlier build. This is a development-signed APK, not a Play Store release.
 
 All built-in interface copy is English. Your existing names, notes and descriptions are preserved as entered.
 
@@ -32,7 +32,7 @@ The selected range applies to Home spending/category totals, Activity rows, matc
 
 ## Features
 
-| Area | Behaviour in 0.4.0 |
+| Area | Behaviour in 0.5.0 |
 |---|---|
 | SMS capture | Supported bank/card transaction messages are processed locally. Import the last 30 days; already-seen messages are skipped, including fingerprints retained from earlier versions. |
 | Gmail email tracking | Optional automatic tracking from visible Gmail payment-email notifications. This does not sign in to Gmail, read the complete inbox, or fetch past email. Truncated/grouped/hidden alerts can be missed. |
@@ -107,3 +107,13 @@ Additional native domain tests use the standard JSON-java jar only on the deskto
 Validation covers salary-cycle edges, month-end renewals, ATM/cash/card accounting, partial/linked repayments, conservative duplicate matches, backup password/tamper handling, notes, bulk corrections/Undo, persistence, responsive layouts, dark mode, reduced motion and native-bridge UI contracts.
 
 No Android phone was connected during development. The APK build, lint, desktop native-domain checks and browser UI checks do not establish real-device SMS delivery, Gmail/bank notification contents, background alarm timing, OEM battery behaviour, the Android document picker or an installed upgrade/restore. Those device checks remain to be performed. No phone was installed or modified automatically.
+
+## Recheck captured SMS after this update
+
+Install 0.5.0 over your existing release build without uninstalling. Open **Settings → Tracking & reminders → Import last 30 days** to recover supported missed alerts and recheck recent captures. The import covers the last 30 days, even though development checks use the complete approved backup.
+
+Only untouched pending captures can be automatically revised. Your reviewed notes, categories, loan links and other accounting choices remain protected. An older entry that is no longer recognized as a completed bank payment appears as **Confirm SMS entry**, outside totals. Compare the original message, then keep/edit it or remove it. Undo is available.
+
+When a debit and credit in different bank accounts have a unique matching reference and amount, the transaction details offer **Review own transfer**. Confirm only if both accounts are yours. This replaces their expense/income counting with one own transfer, keeps the source records and account flows, and supports Undo. Matching amount alone never proves an own transfer or a card-bill funding source.
+
+ATM withdrawals move money to Cash. Successful UPI Lite top-ups move money to the UPI Lite wallet; record spending from that wallet when there is no separate supported alert. Credit-card payment receipts reduce the card liability without becoming salary/income; review the funding account when the receipt does not identify it. Masked payees still need your note or category choice.

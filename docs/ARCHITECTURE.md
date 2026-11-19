@@ -58,3 +58,11 @@ The WebView loads bundled assets with a restrictive CSP, network loads blocked a
 Search summaries aggregate matched active transactions, separating net expenses, loans, repayments, income and own transfers. Possible duplicates are excluded from counted totals. These are transaction-period summaries rather than a second loan balance calculation.
 
 The custom reporting range is view state shared by Home and Activity/account-history reports. It uses local calendar midnights, an inclusive selected end date and an exclusive next-day boundary, rather than fixed 24-hour offsets. Monthly budgets and reminder due dates retain their existing domain rules.
+
+## Conservative SMS rescans
+
+`PreviousSmsParser` is frozen fingerprint compatibility code for 0.4. New classification uses `SmsParser` only. Inbox import uses the sender timestamp when available and also supplies the exact receipt timestamp for old-fingerprint lookup. No fuzzy time-window matching is used to identify an old import. `CapturePolicy` repairs only untouched pending SMS and flags unsupported old captures instead of deleting them. Source-only metadata enrichment remains compatible with Undo through `MutationGuard`.
+
+`TransferLink` suggests unique opposite bank legs with exact references and amounts, then requires the user to confirm ownership. A single atomic, reversible commit retains the debit as a transfer and archives the matching credit source. `creditDate` preserves the destination leg's snapshot timing. Reference matching recognizes either leg of a confirmed transfer on later captures.
+
+Real-data runners live in `tests/` and `scripts/`; private corpus files and generated financial states live outside the checkout. See `AGENTS.md` and `docs/TESTING.md`.

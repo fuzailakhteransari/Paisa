@@ -40,6 +40,8 @@ jobs:
         run: npm run test:core
       - name: Check native domain rules
         run: npm run test:native
+      - name: Report private-corpus availability
+        run: npm run test:real
       - name: Assemble APK and run Android lint
         run: ./gradlew --no-daemon :app:assembleDebug :app:lintDebug
       - name: Upload development APK and lint report

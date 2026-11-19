@@ -2,7 +2,7 @@ plugins { id 'com.android.application' }
 android {
     namespace 'in.paisa.personal'
     compileSdk 35
-    defaultConfig { applicationId 'in.paisa.personal'; minSdk 26; targetSdk 35; versionCode 6; versionName '0.4.0' }
+    defaultConfig { applicationId 'in.paisa.personal'; minSdk 26; targetSdk 35; versionCode 7; versionName '0.5.0' }
     compileOptions { sourceCompatibility JavaVersion.VERSION_1_8; targetCompatibility JavaVersion.VERSION_1_8 }
     buildTypes { debug { minifyEnabled false }; release { minifyEnabled false } }
 }

@@ -20,3 +20,7 @@ test-results/
 .env
 .env.*
 !.env.example
+.private-fixtures/
+private-data/
+.paisa-local.json
+sms-*.xml

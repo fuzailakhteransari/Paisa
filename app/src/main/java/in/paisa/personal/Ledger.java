@@ -10,7 +10,7 @@ public final class Ledger {
  public static final long MAX=100_000_000_000L;
  public static final Set<String> KINDS=new HashSet<>(Arrays.asList("expense","income","refund","lend","borrow","receive","repay","card_payment","transfer"));
  public static long amount(JSONObject o,String key,boolean zero) throws Exception {long n=new BigDecimal(o.get(key).toString()).longValueExact();if(n<(zero?0:1)||n>MAX)throw new IllegalArgumentException("Enter a valid amount");return n;}
- public static boolean active(JSONObject e){return !e.optBoolean("deleted")&&e.optString("duplicateOf").isEmpty();}
+ public static boolean active(JSONObject e){return !e.optBoolean("deleted")&&e.optString("duplicateOf").isEmpty()&&e.optString("captureReview").isEmpty();}
  public static boolean isLoan(String k){return k.equals("lend")||k.equals("borrow");}
  public static boolean isRepayment(String k){return k.equals("receive")||k.equals("repay");}
  public static String person(JSONObject e){return e.optString("person").trim().toLowerCase(Locale.ROOT);}

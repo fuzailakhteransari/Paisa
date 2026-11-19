@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.5.0 — 2026-11-19
+
+- Audited the approved local corpus of 14,072 SMS against independently reviewed expectations. Added private, integrity-checked real-data regressions without including messages or identifiers in the repository or CI.
+- Recovered 43 previously missed bank events: completed UPI mandates/AutoPay, deposits, legacy transfers, deductions, reversals and UPI Lite top-ups. Tightened sender and event checks to reject 22 non-bank/loyalty/offer/receipt false positives in the old parser.
+- Classified 21 observed cash withdrawals as bank-to-cash transfers, kept UPI Lite funding separate from spending, recognized additional card-payment receipts and extracted missing bank/UPI references.
+- Fixed incoming payments whose payee address contains refund-related text. Bank balances now support the observed abbreviated balance layouts.
+- Unified inbox/broadcast timestamps and retained exact 0.4 fingerprint compatibility. Rescans repair only untouched pending captures, preserve user notes and linked accounting choices, and keep questionable old captures for explicit review outside counted totals.
+- Added contextual own-transfer review for unique debit/credit pairs with the same bank reference and amount. Ownership requires confirmation; linking preserves both source records, per-account timing and Undo.
+- Added actual-data replay, upgrade, encrypted restore, note/tag search, reporting, budgets, cash/account history, payment linking and bulk/Undo checks. Existing public checks remain in CI; private data checks explicitly skip when the corpus is unavailable.
+
 ## 0.4.0 — 2026-11-19
 
 - Added automatic note tags and optional hashtags, with existing notes immediately searchable without a migration or re-entry.
