@@ -30,9 +30,9 @@ Individual suites:
 | Command | Coverage | Checks |
 |---|---|---:|
 | `npm run test:core` | Amount validation, cash/card/loan accounting, custom cycles, budgets and renewals | 58 |
-| `npm run test:native` | Native parser/domain rules, duplicate matching, encrypted backup and Undo guard | 67 |
+| `npm run test:native` | Native parser/domain rules, duplicate matching, encrypted backup and Undo guard | 91 |
 | `npm run test:ui` | Notes, captured-payment linking, budgets, Undo, source configuration, persistence and responsive flows | 67 |
-| Total | Desktop automated checks | 192 |
+| Total | Desktop automated checks | 216 |
 
 The native runner downloads a pinned JSON-java test jar from Maven Central, checks its SHA-256 and caches it under `.cache/`. It is never bundled in the APK. Playwright is a desktop-only development dependency.
 
@@ -54,4 +54,4 @@ These checks require an actual phone and have not been established by desktop te
 - Save, restore and export a safety copy through Android's document picker.
 - Compare account totals with actual records and review unsupported bank formats.
 
-The 0.3.1 local verification includes a successful APK build and zero lint errors. The two acknowledged lint warnings concern the target API level and JavaScript enabled for the bundled local UI.
+The 0.3.2 local verification includes a successful APK build and zero lint errors. The two acknowledged lint warnings concern the target API level and JavaScript enabled for the bundled local UI.

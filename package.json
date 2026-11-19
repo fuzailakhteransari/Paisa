@@ -1,6 +1,6 @@
 {
   "name": "paisa-android",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "private": true,
   "description": "Development checks for Paisa, an on-device Android expense tracker.",
   "scripts": {

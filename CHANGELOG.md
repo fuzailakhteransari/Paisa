@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.2 — 2026-11-19
+
+- Fixed missed HDFC UPI credit-card purchases using the `Txn Rs… On HDFC Bank Card… by UPI…` SMS layout, which does not contain a normal debit/spend verb.
+- Recognize the matching `BLOCK CC` card marker, retain the purchase as an expense on its credit-card account, and extract the UPI reference for duplicate prevention.
+- Display masked payees for review without treating partial VPAs as unique remembered merchants.
+- Added 24 regression checks with fictional card/payee/reference data, including Rs.450/Rs.500 purchases, re-import identity, failed/OTP alerts and the debit-card variant.
+- To recover missed recent purchases after updating, open Settings → Tracking & reminders → Import last 30 days. Existing supported SMS fingerprints are retained.
+
 ## 0.3.1 — 2026-11-18
 
 - Converted built-in app screens, transaction types, empty states, hints, validation errors, permission disclosures and payment-review notifications to English.

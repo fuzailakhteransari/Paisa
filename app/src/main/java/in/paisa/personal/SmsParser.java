@@ -23,9 +23,20 @@ public final class SmsParser {
         String text=body.substring(0,Math.min(body.length(),20000)).replace('\n',' ').replaceAll("\\s+"," ").trim();
         String lower=text.toLowerCase(Locale.ROOT);
         if(lower.matches(".*\\b(otp|one.time.password|verification.code|failed|declined|unsuccessful|pending|scheduled|mandate|request|will be|to be debited)\\b.*")) return null;
+        // HDFC UPI card purchases use "Txn Rs... On ... Card", without a debit verb.
+        // Require the complete purchase shape, and explicit CC/DC evidence for an untyped card.
+        Matcher hdfcTxn=match("^txn\\s*[:.-]?\\s*"+MONEY
+                +"\\s+on\\s+hdfc\\s+bank\\s+(?:(?:credit|debit)\\s+)?card\\s*(?:[x*]+\\s*)?(\\d{4})(?!\\d)"
+                +"\\s+at\\s+(\\S{1,120})\\s+by\\s+upi\\s+(\\d{10,16})(?!\\d)"
+                +"\\s+on\\s+\\d{2}-\\d{2}(?:-\\d{2,4})?\\b",text);
+        boolean hdfcShape=hdfcTxn.find();
+        String hdfcLast4=hdfcShape?hdfcTxn.group(2):"";
+        boolean hdfcCredit=hdfcShape&&(lower.contains("credit card")||match("\\bblock\\s+cc\\s+"+hdfcLast4+"(?!\\d)",text).find());
+        boolean hdfcDebit=hdfcShape&&(lower.contains("debit card")||match("\\bblock\\s+dc\\s+"+hdfcLast4+"(?!\\d)",text).find());
+        boolean hdfcCardSpend=hdfcShape&&(hdfcCredit||hdfcDebit);
         boolean cardPay=lower.matches(".*(?:payment (?:of .* )?received.*(?:card)|(?:card).*payment (?:of .* )?received|paid.*(?:credit card bill)|payment towards.*card).*" );
         boolean credit=lower.matches(".*\\b(credited|received|refunded)\\b.*");
-        boolean debit=lower.matches(".*\\b(debited|spent|paid|sent|purchased|withdrawn)\\b.*") || lower.contains("transaction of") && lower.contains("card");
+        boolean debit=lower.matches(".*\\b(debited|spent|paid|sent|purchased|withdrawn)\\b.*") || lower.contains("transaction of") && lower.contains("card") || hdfcCardSpend;
         cardPay=cardPay||debit&&lower.matches(".*(?:towards\\s+(?:your\\s+)?(?:[a-z]+\\s+){0,2}credit\\s*card|to\\s+(?:your\\s+)?(?:(?:hdfc|icici|sbi|axis|kotak)\\s+)?credit\\s*card(?:\\s+bill)?).*" );
         if(!credit&&!debit&&!cardPay) return null;
         if(!lower.matches(".*\\b(bank|a/c|acct|account|upi|card|imps|neft|rtgs)\\b.*")) return null;
@@ -37,8 +48,8 @@ public final class SmsParser {
         if(paise<=0 || paise>100_000_000_000L) return null;
         Parsed p=new Parsed(); p.amount=paise;
         p.kind=cardPay?"card_payment":credit?(lower.contains("refund")?"refund":"income"):"expense";
-        boolean card=lower.contains("credit card") || lower.contains("creditcard");
-        String last4=group("(?:a/c|acct|account|card)(?:\\s*(?:no\\.?|number|ending|xx|x|\\*|:|-|in|with))*\\s*[xX*]*(\\d{4})(?!\\d)",text,"");
+        boolean card=lower.contains("credit card") || lower.contains("creditcard") || hdfcCredit;
+        String last4=hdfcCardSpend?hdfcLast4:group("(?:a/c|acct|account|card)(?:\\s*(?:no\\.?|number|ending|xx|x|\\*|:|-|in|with))*\\s*[xX*]*(\\d{4})(?!\\d)",text,"");
         p.account=(card&&!cardPay?"Credit card":"Bank")+(last4.isEmpty()?"":" · "+last4);
         p.bank=bankName(sender);if(p.bank.equals("Bank"))p.bank=bankName(text);
         p.accountId=(card&&!cardPay?"credit:":"bank:")+p.bank.toLowerCase(Locale.ROOT).replaceAll("[^a-z0-9]+","-")+":"+(last4.isEmpty()?"unknown":last4);
@@ -49,14 +60,15 @@ public final class SmsParser {
         p.cashWithdrawal=debit&&!credit&&(lower.contains("atm")||lower.contains("cash withdrawal")||lower.contains("cash withdrawn"));
         if(p.cashWithdrawal)p.kind="transfer";
         String direction=credit?"(?:\\bfrom\\s+)":"(?:\\bat\\s+|\\bto\\s+)";
-        String title=cardPay?"Card bill payment":group(direction+"([a-zA-Z0-9][a-zA-Z0-9 .@&'_-]{1,80})",text,credit?"Money received":"Payment");
+        String payee=hdfcCardSpend?hdfcTxn.group(3):"";
+        String title=hdfcCardSpend?(payee.contains("*")?"UPI payment · "+payee:payee):cardPay?"Card bill payment":group(direction+"([a-zA-Z0-9][a-zA-Z0-9 .@&'_-]{1,80})",text,credit?"Money received":"Payment");
         p.title=title.split("(?i)\\s+(?:on|via|using|ref|upi|avl|available|for|a/c|acct|account|bank|txn|transaction|bal)\\b")[0].trim();
         if(p.title.isEmpty()) p.title="Payment";
         if(p.cashWithdrawal)p.title="ATM withdrawal";
-        p.merchantKey=merchantKey(text,p.kind,p.title);
+        p.merchantKey=hdfcCardSpend&&payee.contains("*")?"":merchantKey(text,p.kind,p.title);
         // Recipient account numbers are used as hashes, not retained in titles.
         if(p.title.matches("(?i)^(?:a/c|acct|account)\\b.*"))p.title="Recipient account";
-        p.reference=group("(?:UPI\\s*(?:ref(?:erence)?(?:\\s*no\\.?)?|txn)|UTR|IMPS\\s*ref|NEFT\\s*ref|ref(?:erence)?(?:\\s*no\\.?)?)\\s*[:#.-]?\\s*([A-Z0-9]{8,24})",text,"");
+        p.reference=hdfcCardSpend?hdfcTxn.group(4):group("(?:UPI\\s*(?:ref(?:erence)?(?:\\s*no\\.?)?|txn)|UTR|IMPS\\s*ref|NEFT\\s*ref|ref(?:erence)?(?:\\s*no\\.?)?)\\s*[:#.-]?\\s*([A-Z0-9]{8,24})",text,"");
         p.category="Unsorted";
         if(p.kind.equals("expense")) {
             if(lower.matches(".*\\b(swiggy|zomato|restaurant|cafe|dominos|mcdonalds)\\b.*")) p.category="Food";

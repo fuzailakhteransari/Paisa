@@ -4,13 +4,13 @@
   <p><strong>Your money, made clear.</strong></p>
   <p>An Android expense tracker built around less effort, useful reminders and a clean daily view.</p>
   <p>
-    <img alt="Version 0.3.1" src="https://img.shields.io/badge/version-0.3.1-174d40">
+    <img alt="Version 0.3.2" src="https://img.shields.io/badge/version-0.3.2-174d40">
     <img alt="Android 8 and above" src="https://img.shields.io/badge/Android-8%2B-174d40">
     <img alt="On-device processing" src="https://img.shields.io/badge/processing-on--device-174d40">
-    <img alt="192 automated checks" src="https://img.shields.io/badge/checks-192-d8fa9a?labelColor=174d40">
+    <img alt="216 automated checks" src="https://img.shields.io/badge/checks-216-d8fa9a?labelColor=174d40">
   </p>
   <p>
-    <a href="https://github.com/fuzailakhteransari/Paisa/releases/tag/v0.3.1">Download Android build</a> ·
+    <a href="https://github.com/fuzailakhteransari/Paisa/releases/tag/v0.3.2">Download Android build</a> ·
     <a href="docs/USER_GUIDE.md">User guide</a> ·
     <a href="docs/TESTING.md">Build & test</a> ·
     <a href="CHANGELOG.md">Changelog</a>
@@ -43,10 +43,14 @@ See spending today, this week or in your own monthly cycle. Review a captured pa
 
 **Gmail tracking uses visible notifications or shared/imported email text.** It does not sign into Gmail or synchronize the complete inbox. Unsupported bank formats and truncated alerts need review. Account balances reflect recorded data, rather than a live banking connection.
 
+## HDFC card SMS fix in 0.3.2
+
+HDFC UPI card alerts beginning with `Txn Rs…` are now supported, including the reported Rs.450 and Rs.500 purchase layout. After installing the update, use **Settings → Tracking & reminders → Import last 30 days** to recover missed recent messages. Keep SMS permission enabled for future captures. Masked payees still require a purpose/category review.
+
 ## Install and set up
 
-1. Download `Paisa-0.3.1-debug.apk` from [Releases](https://github.com/fuzailakhteransari/Paisa/releases/tag/v0.3.1).
-2. Install on Android 8+ with an updated Android System WebView. Existing 0.1/0.2/0.3 users should install the matching signed update over the app, without uninstalling.
+1. Download `Paisa-0.3.2-debug.apk` from [Releases](https://github.com/fuzailakhteransari/Paisa/releases/tag/v0.3.2).
+2. Install on Android 8+ with an updated Android System WebView. Existing 0.1/0.2/0.3/0.3.1 users should install the matching signed update over the app, without uninstalling.
 3. Open **Settings → Tracking & reminders** to choose optional SMS/Gmail/bank-alert access.
 4. Set an opening balance under **Accounts** and an optional monthly limit under **Budgets**.
 5. Create a full encrypted backup under **Backup & export** and keep its password separately.
@@ -82,7 +86,7 @@ npx playwright install chromium
 npm test
 ```
 
-The **192 checks** cover accounting, parsing, encryption/tampering, repayment links, duplicate handling, notes, Undo, persistence and responsive UI flows. Android build/lint and browser checks also run in GitHub Actions. Desktop checks do not establish real-device behaviour.
+The **216 checks** cover accounting, parsing, encryption/tampering, repayment links, duplicate handling, notes, Undo, persistence and responsive UI flows. Android build/lint and browser checks also run in GitHub Actions. Desktop checks do not establish real-device behaviour.
 
 [Testing details and signing notes →](docs/TESTING.md)
 

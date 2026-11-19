@@ -1,18 +1,22 @@
-# Paisa 0.3.1 — user guide
+# Paisa 0.3.2 — user guide
 
-Android development build, 18 November 2026. The existing four main destinations remain Home, Activity, Loans and Bills. Accounts, Budgets, Subscriptions, Tracking and Backup are reached through Settings. Home adds only one small budget summary, and only after an overall budget is configured.
+Android development build, 19 November 2026. The existing four main destinations remain Home, Activity, Loans and Bills. Accounts, Budgets, Subscriptions, Tracking and Backup are reached through Settings. Home adds only one small budget summary, and only after an overall budget is configured.
 
 ## Install or update
 
-Install **Paisa-0.3.1-debug.apk** on Android 8+ with an updated Android System WebView. Install over 0.1/0.2/0.3 without uninstalling to retain existing records. The application ID stays `in.paisa.personal`, the version code increases to 4, and the signing certificate is checked against the earlier build. This is a development-signed APK, not a Play Store release.
+Install **Paisa-0.3.2-debug.apk** on Android 8+ with an updated Android System WebView. Install over 0.1/0.2/0.3/0.3.1 without uninstalling to retain existing records. The application ID stays `in.paisa.personal`, the version code increases to 5, and the signing certificate is checked against the earlier build. This is a development-signed APK, not a Play Store release.
 
 All built-in interface copy is English. Your existing names, notes and descriptions are preserved as entered.
 
 The database upgrade creates new tables without dropping existing entries or bills. Existing notes, merchant identities and safe remembered category rules are carried forward. Old account labels are preserved as legacy accounts rather than guessing which real bank they belong to. Rename/correct these in Settings → Accounts when necessary.
 
+## Recover missed HDFC card purchases
+
+Version 0.3.2 supports HDFC purchase SMS beginning with `Txn Rs… On HDFC Bank Card… by UPI…`, using the matching `BLOCK CC` marker to identify the credit card. Install this update over the existing app, then use **Settings → Tracking & reminders → Import last 30 days**. The original SMS dates are retained. Previously recognized records keep their duplicate fingerprints; newly supported purchases appear for review. A partial/masked payee is not a reliable remembered merchant identity.
+
 ## Features
 
-| Area | Behaviour in 0.3.1 |
+| Area | Behaviour in 0.3.2 |
 |---|---|
 | SMS capture | Supported bank/card transaction messages are processed locally. Import the last 30 days; already-seen messages are skipped, including fingerprints retained from earlier versions. |
 | Gmail email tracking | Optional automatic tracking from visible Gmail payment-email notifications. This does not sign in to Gmail, read the complete inbox, or fetch past email. Truncated/grouped/hidden alerts can be missed. |
@@ -82,7 +86,7 @@ node tests/finance-v3.test.cjs
 
 APK: `app/build/outputs/apk/debug/app-debug.apk`. The runtime has no third-party application dependencies; it uses native Java/SQLite/services and local WebView assets `finance.js`, `app-v3.js` and `style.css`.
 
-Additional native domain tests use the standard JSON-java jar only on the desktop test classpath, not in the APK. Download `org.json:json:20240303` from Maven Central, compile `Ledger`, `SmsParser`, `NoticeParser`, `EmailText`, `BackupCipher`, `MutationGuard`, `CaptureMatcher`, `ParserTest` and `UpgradeTest`, then run the two test mains. Use `npm ci`, `npx playwright install chromium`, then `npm test` to run all 192 desktop checks. The UI runner starts a local server on port 8774 and closes it afterward. See [Testing](TESTING.md) for reproducible commands.
+Additional native domain tests use the standard JSON-java jar only on the desktop test classpath, not in the APK. Download `org.json:json:20240303` from Maven Central, compile `Ledger`, `SmsParser`, `NoticeParser`, `EmailText`, `BackupCipher`, `MutationGuard`, `CaptureMatcher`, `ParserTest`, `UpgradeTest` and `CardSmsTest`, then run the three test mains. Use `npm ci`, `npx playwright install chromium`, then `npm test` to run all 216 desktop checks. The UI runner starts a local server on port 8774 and closes it afterward. See [Testing](TESTING.md) for reproducible commands.
 
 Validation covers salary-cycle edges, month-end renewals, ATM/cash/card accounting, partial/linked repayments, conservative duplicate matches, backup password/tamper handling, notes, bulk corrections/Undo, persistence, responsive layouts, dark mode, reduced motion and native-bridge UI contracts.
 

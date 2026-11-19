@@ -39,7 +39,7 @@ flowchart TD
 
 ## Persistence and recovery
 
-SQLite database version 2 upgrades previous records without dropping entries or bills. App version 0.3.1 retains the schema and application ID. Existing user notes, titles and categories are not translated or rewritten.
+SQLite database version 2 upgrades previous records without dropping entries or bills. App version 0.3.2 retains the schema and application ID. Existing user notes, titles and categories are not translated or rewritten.
 
 Mutations validate the prospective ledger before committing. Undo retains up to 20 actions, preserves later capture-source evidence and rejects conflicting later edits. Backups include the dataset and capture fingerprints; Undo history is excluded.
 
