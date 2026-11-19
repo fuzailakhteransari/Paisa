@@ -2,6 +2,7 @@
 
 ## 0.7.1 — 2026-11-19
 
+- Web follow-up: refresh available cloud copies for connected browsers that have not initialized sync yet. Returning to the PC or reloading now discovers a first phone backup without reconnecting Google; restore still needs explicit confirmation.
 - Moved the personal web companion and API into a dedicated Paisa Vercel project at paisa-fuzail.vercel.app, deployed directly from the Paisa repository.
 - Removed personal routes, files and environment variables from the company application and retired the two accidental combined deployments.
 - Use a separate personal Google OAuth client and a fresh independent session secret. Updated Android pairing/web links, root PWA scope and Google-compatible referrer policy. Existing phone financial records remain local and unchanged.
