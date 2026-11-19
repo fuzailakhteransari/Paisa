@@ -48,7 +48,7 @@ npm run test:real -- --required
 
 The directory has an immutable source XML, received/sent message JSONL, independently reviewed expected JSONL, a frozen 0.4 baseline and an integrity manifest. Source, parsed input, expectations and baseline are SHA-256 verified before a run. Never derive expected labels from the current parser. Never put raw messages, OTPs, account identifiers, actual-data screenshots or transaction exports in Git, release archives or CI logs.
 
-The 0.5.1 approved corpus contains 14,072 SMS: 8,638 received and 5,434 sent. It yields 1,583 bank transaction alerts and one statement notice, with zero comparison mismatches and zero parser exceptions. Expectations include amount, direction/type, account, available references and 74 explicit bank-balance snapshots. Coverage is for the reviewed layouts; this is not a claim that every future bank format is supported.
+The 0.6.0 approved corpus contains 14,072 SMS: 8,638 received and 5,434 sent. It yields 1,583 bank transaction alerts and one statement notice, with zero comparison mismatches and zero parser exceptions. Expectations include amount, direction/type, account, available references and 74 explicit bank-balance snapshots. Coverage is for the reviewed layouts; this is not a claim that every future bank format is supported.
 
 `RealSmsRunner` scans every record, including negative cases. `RealSmsScenarios` runs the shared Java parser, capture compatibility policy, reference matcher, transfer-link policy, ledger validation, Undo guard and encrypted backup on actual records. It checks full replay, 0.4 re-import compatibility, reviewed-user protection and conservative repair. Upgraded account balances are compared directly with fresh imports using the actual balance snapshots. Its in-memory import model does not replace Android SQLite integration testing. `test-real-sms-ui.cjs` uses the imported actual state in an isolated browser to exercise reports, search/tags, dates, budgets, account history, links and bulk/Undo. Sandbox purpose labels establish test intent only; they do not assert the user's actual loan, subscription or bill purpose. All private snapshots and diagnostics remain outside the checkout.
 
@@ -70,4 +70,8 @@ These checks require an actual phone and have not been established by desktop te
 - Save, restore and export a safety copy through Android's document picker.
 - Compare account totals with actual records and review unsupported bank formats.
 
-The 0.5.1 local verification includes a successful APK build and zero lint errors. The two acknowledged lint warnings concern the target API level and JavaScript enabled for the bundled local UI.
+The 0.6.0 local verification includes a successful APK build and zero lint errors. The two acknowledged lint warnings concern the target API level and JavaScript enabled for the bundled local UI.
+
+## 0.6.0 mode-control validation
+
+The approved actual ledger is used to change Local/Google preferences, reload the app, return to Local, compare every financial collection and category rule, verify the Google action remains disabled, observe zero external requests, verify small-screen dark layout and open manual export. The native actual-data runner verifies the optional setting, rejects unknown modes and encrypts/restores the preference with the complete ledger. Google OAuth, server backup and desktop sync are outside this first delivery and are not claimed as tested.

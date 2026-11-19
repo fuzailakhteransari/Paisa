@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.6.0 — 2026-11-19
+
+- Added Settings → Account & sync, with Local only as the default and an optional Google backup & sync preference.
+- Save and restore the preference independently of financial records. Keep active mode, account connection and Google-backup status explicitly local/not connected.
+- Google sign-in is unavailable and disabled in this first delivery. No cloud SDK, network permission, account session or upload path has been added.
+- Kept manual encrypted backup/export and the existing Home/navigation layout. Documented the remaining two stages; they require a further user instruction.
+- Added actual-ledger checks for preference persistence, record preservation, unavailable sign-in, zero external requests, small-screen layout and encrypted backup compatibility.
+
 ## 0.5.1 — 2026-11-19
 
 - Corrected sender/receipt timestamps on untouched pending legacy imports during rescan. This keeps the latest bank-balance snapshot from counting its own payment again. Reviewed user entries remain protected.
