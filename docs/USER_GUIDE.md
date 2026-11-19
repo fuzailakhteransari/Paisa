@@ -1,10 +1,10 @@
-# Paisa 0.3.2 — user guide
+# Paisa 0.4.0 — user guide
 
 Android development build, 19 November 2026. The existing four main destinations remain Home, Activity, Loans and Bills. Accounts, Budgets, Subscriptions, Tracking and Backup are reached through Settings. Home adds only one small budget summary, and only after an overall budget is configured.
 
 ## Install or update
 
-Install **Paisa-0.3.2-debug.apk** on Android 8+ with an updated Android System WebView. Install over 0.1/0.2/0.3/0.3.1 without uninstalling to retain existing records. The application ID stays `in.paisa.personal`, the version code increases to 5, and the signing certificate is checked against the earlier build. This is a development-signed APK, not a Play Store release.
+Install **Paisa-0.4.0-debug.apk** on Android 8+ with an updated Android System WebView. Install over 0.1/0.2/0.3/0.3.1/0.3.2 without uninstalling to retain existing records. The application ID stays `in.paisa.personal`, the version code increases to 6, and the signing certificate is checked against the earlier build. This is a development-signed APK, not a Play Store release.
 
 All built-in interface copy is English. Your existing names, notes and descriptions are preserved as entered.
 
@@ -14,9 +14,25 @@ The database upgrade creates new tables without dropping existing entries or bil
 
 Version 0.3.2 supports HDFC purchase SMS beginning with `Txn Rs… On HDFC Bank Card… by UPI…`, using the matching `BLOCK CC` marker to identify the credit card. Install this update over the existing app, then use **Settings → Tracking & reminders → Import last 30 days**. The original SMS dates are retained. Previously recognized records keep their duplicate fingerprints; newly supported purchases appear for review. A partial/masked payee is not a reliable remembered merchant identity.
 
+## Notes, tags and search totals
+
+Use **Notes & tags** while reviewing or editing a payment. Write a sentence naturally, such as a lunch with a person or a petrol purchase. The original note is preserved. Tags are derived locally, so old notes work immediately without re-entering them. Add an optional `#tag` when useful.
+
+In **Activity**, search a name, note word, category, description, amount or hashtag. Partial names work while typing, and multiple words narrow the result. Fuel, Petrol and Peetrol are grouped. Open **Browse note tags** to tap an existing note keyword. The keyboard Search action hides the keyboard and reveals the result summary.
+
+Search totals apply to the matching transactions in the selected period and account filter. Spending is net of matching refunds. Money lent, money borrowed and repayments are shown separately; they are not added to ordinary spending. These are period totals rather than outstanding loan balances. Use Loans for balances. Set the correct transaction type when lending/borrowing; a note does not reclassify a payment.
+
+Other is available in the quick category review and full entry form.
+
+## Date filters
+
+Home and Activity offer Today, Week, Month and Range; Activity also offers All. Choose **Range**, enter **From** and **To**, and apply. Both dates are included, even for a single-day selection. An inverted or invalid range is rejected without changing the active report.
+
+The selected range applies to Home spending/category totals, Activity rows, matching search totals and account-history reports. Returning between Home and Activity retains an active custom range. Opening account history starts at All; you can then select its reporting range. The existing monthly salary-cycle setting still applies to Month. Budgets remain monthly, and bills/subscriptions keep their own schedules.
+
 ## Features
 
-| Area | Behaviour in 0.3.2 |
+| Area | Behaviour in 0.4.0 |
 |---|---|
 | SMS capture | Supported bank/card transaction messages are processed locally. Import the last 30 days; already-seen messages are skipped, including fingerprints retained from earlier versions. |
 | Gmail email tracking | Optional automatic tracking from visible Gmail payment-email notifications. This does not sign in to Gmail, read the complete inbox, or fetch past email. Truncated/grouped/hidden alerts can be missed. |
@@ -86,7 +102,7 @@ node tests/finance-v3.test.cjs
 
 APK: `app/build/outputs/apk/debug/app-debug.apk`. The runtime has no third-party application dependencies; it uses native Java/SQLite/services and local WebView assets `finance.js`, `app-v3.js` and `style.css`.
 
-Additional native domain tests use the standard JSON-java jar only on the desktop test classpath, not in the APK. Download `org.json:json:20240303` from Maven Central, compile `Ledger`, `SmsParser`, `NoticeParser`, `EmailText`, `BackupCipher`, `MutationGuard`, `CaptureMatcher`, `ParserTest`, `UpgradeTest` and `CardSmsTest`, then run the three test mains. Use `npm ci`, `npx playwright install chromium`, then `npm test` to run all 216 desktop checks. The UI runner starts a local server on port 8774 and closes it afterward. See [Testing](TESTING.md) for reproducible commands.
+Additional native domain tests use the standard JSON-java jar only on the desktop test classpath, not in the APK. Download `org.json:json:20240303` from Maven Central, compile `Ledger`, `SmsParser`, `NoticeParser`, `EmailText`, `BackupCipher`, `MutationGuard`, `CaptureMatcher`, `ParserTest`, `UpgradeTest` and `CardSmsTest`, then run the three test mains. Use `npm ci`, `npx playwright install chromium`, then `npm test` to run all 291 desktop checks. The UI runner starts a local server on port 8774 and closes it afterward. See [Testing](TESTING.md) for reproducible commands.
 
 Validation covers salary-cycle edges, month-end renewals, ATM/cash/card accounting, partial/linked repayments, conservative duplicate matches, backup password/tamper handling, notes, bulk corrections/Undo, persistence, responsive layouts, dark mode, reduced motion and native-bridge UI contracts.
 

@@ -39,7 +39,7 @@ flowchart TD
 
 ## Persistence and recovery
 
-SQLite database version 2 upgrades previous records without dropping entries or bills. App version 0.3.2 retains the schema and application ID. Existing user notes, titles and categories are not translated or rewritten.
+SQLite database version 2 upgrades previous records without dropping entries or bills. App version 0.4.0 retains the schema and application ID. Existing user notes, titles and categories are not translated or rewritten.
 
 Mutations validate the prospective ledger before committing. Undo retains up to 20 actions, preserves later capture-source evidence and rejects conflicting later edits. Backups include the dataset and capture fingerprints; Undo history is excluded.
 
@@ -50,3 +50,11 @@ Backups use AES-256-GCM, PBKDF2-HMAC-SHA256 with 600,000 iterations, a random sa
 Gmail support reads visible selected-app notification text or explicitly shared/imported content. There is no mailbox OAuth or full inbox synchronization. Parsers support common English INR formats and require real-device checks for bank-specific variations.
 
 The WebView loads bundled assets with a restrictive CSP, network loads blocked and file/content access disabled. JavaScript is enabled for the bundled UI. The APK has no INTERNET permission. Background scheduling and permission behaviour still depend on Android and the device vendor.
+
+## Note search and report periods
+
+`finance.js` derives tags from original note text and matches normalized search tokens across notes, names, descriptions, categories and accounts. Optional hashtags require no separate database field. Fuel/Petrol aliases are handled locally. Full notes remain the backup/export source of truth; tags are recalculated after loading or restoring older records.
+
+Search summaries aggregate matched active transactions, separating net expenses, loans, repayments, income and own transfers. Possible duplicates are excluded from counted totals. These are transaction-period summaries rather than a second loan balance calculation.
+
+The custom reporting range is view state shared by Home and Activity/account-history reports. It uses local calendar midnights, an inclusive selected end date and an exclusive next-day boundary, rather than fixed 24-hour offsets. Monthly budgets and reminder due dates retain their existing domain rules.

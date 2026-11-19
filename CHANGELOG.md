@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.4.0 — 2026-11-19
+
+- Added automatic note tags and optional hashtags, with existing notes immediately searchable without a migration or re-entry.
+- Added search totals for matching spending, money lent/borrowed and repayments, kept separate from one another. Refunds reduce spending; unresolved duplicates remain excluded from counted totals.
+- Grouped Fuel, Petrol and Peetrol searches, with partial-name and multiword matching across notes, people, descriptions, categories and accounts.
+- Added browseable note tags and kept the search input stable while typing. The keyboard Search action reveals results.
+- Added an inclusive From/To date range shared by Home, Activity, search and account-history reports, alongside Today, Week, Month and All.
+- Exposed Other in the quick payment-review category choices as well as the full entry form.
+- Added 39 accounting/search/date-boundary checks and 36 browser checks for the new flows. The suite now includes 291 checks.
+
 ## 0.3.2 — 2026-11-19
 
 - Fixed missed HDFC UPI credit-card purchases using the `Txn Rs… On HDFC Bank Card… by UPI…` SMS layout, which does not contain a normal debit/spend verb.

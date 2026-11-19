@@ -4,13 +4,13 @@
   <p><strong>Your money, made clear.</strong></p>
   <p>An Android expense tracker built around less effort, useful reminders and a clean daily view.</p>
   <p>
-    <img alt="Version 0.3.2" src="https://img.shields.io/badge/version-0.3.2-174d40">
+    <img alt="Version 0.4.0" src="https://img.shields.io/badge/version-0.4.0-174d40">
     <img alt="Android 8 and above" src="https://img.shields.io/badge/Android-8%2B-174d40">
     <img alt="On-device processing" src="https://img.shields.io/badge/processing-on--device-174d40">
-    <img alt="216 automated checks" src="https://img.shields.io/badge/checks-216-d8fa9a?labelColor=174d40">
+    <img alt="291 automated checks" src="https://img.shields.io/badge/checks-291-d8fa9a?labelColor=174d40">
   </p>
   <p>
-    <a href="https://github.com/fuzailakhteransari/Paisa/releases/tag/v0.3.2">Download Android build</a> ·
+    <a href="https://github.com/fuzailakhteransari/Paisa/releases/tag/v0.4.0">Download Android build</a> ·
     <a href="docs/USER_GUIDE.md">User guide</a> ·
     <a href="docs/TESTING.md">Build & test</a> ·
     <a href="CHANGELOG.md">Changelog</a>
@@ -34,8 +34,8 @@ See spending today, this week or in your own monthly cycle. Review a captured pa
 | Area | Features |
 |---|---|
 | Automatic capture | Supported bank SMS, selected bank/payment-app alerts and visible Gmail payment notifications |
-| Quick review | Purpose/category prompts, optional notes, remembered merchant categories and possible-duplicate review |
-| Spending | Today/week/month totals, categories, monthly and category budgets, custom month start day |
+| Quick review | Purpose/category prompts including Other, searchable notes/tags, remembered merchant categories and duplicate review |
+| Spending | Today/week/month/date-range totals, search summaries, categories, budgets and custom month start day |
 | Accounts & cash | Bank/card/cash accounts, account-wise history, opening balances and ATM-to-cash transfers |
 | Loans | Money lent/borrowed, partial repayments and linking an existing captured payment |
 | Bills & subscriptions | Statements, utility bills, renewal schedules, payment linking and reminders |
@@ -43,14 +43,28 @@ See spending today, this week or in your own monthly cycle. Review a captured pa
 
 **Gmail tracking uses visible notifications or shared/imported email text.** It does not sign into Gmail or synchronize the complete inbox. Unsupported bank formats and truncated alerts need review. Account balances reflect recorded data, rather than a live banking connection.
 
-## HDFC card SMS fix in 0.3.2
+## Notes that work like tags
 
-HDFC UPI card alerts beginning with `Txn Rs…` are now supported, including the reported Rs.450 and Rs.500 purchase layout. After installing the update, use **Settings → Tracking & reminders → Import last 30 days** to recover missed recent messages. Keep SMS permission enabled for future captures. Masked payees still require a purpose/category review.
+Write naturally in **Notes & tags**. Existing notes are immediately searchable; optional `#tags` work too. Open **Activity** and search a person, word or tag to see matching entries and totals.
+
+| Search | Result |
+|---|---|
+| A person's name | Their mentions in notes, names and descriptions, with matching spending |
+| A loan recipient | Matching spending, money lent and repayments shown separately |
+| Fuel / Petrol / Peetrol | Both fuel and petrol descriptions, with refunds deducted |
+
+Use **Today**, **Week**, **Month**, **Range** or **All** to change the reporting period. Range includes both selected dates and applies to Home totals, Activity, search and account history. Monthly budgets and bill/subscription schedules keep their own cycles and due dates.
+
+Tags label records; choose **Money lent** or **Money borrowed** for a loan. A note does not reclassify its transaction type.
+
+<p align="center"><img src="docs/images/search-fuel.png" width="260" alt="English note search with an inclusive date range and matching spending total"></p>
+
+The HDFC `Txn Rs…` UPI card purchase fix from 0.3.2 is included. Use **Settings → Tracking & reminders → Import last 30 days** to recover recent missed supported SMS.
 
 ## Install and set up
 
-1. Download `Paisa-0.3.2-debug.apk` from [Releases](https://github.com/fuzailakhteransari/Paisa/releases/tag/v0.3.2).
-2. Install on Android 8+ with an updated Android System WebView. Existing 0.1/0.2/0.3/0.3.1 users should install the matching signed update over the app, without uninstalling.
+1. Download `Paisa-0.4.0-debug.apk` from [Releases](https://github.com/fuzailakhteransari/Paisa/releases/tag/v0.4.0).
+2. Install on Android 8+ with an updated Android System WebView. Existing 0.1/0.2/0.3/0.3.1/0.3.2 users should install the matching signed update over the app, without uninstalling.
 3. Open **Settings → Tracking & reminders** to choose optional SMS/Gmail/bank-alert access.
 4. Set an opening balance under **Accounts** and an optional monthly limit under **Budgets**.
 5. Create a full encrypted backup under **Backup & export** and keep its password separately.
@@ -86,7 +100,7 @@ npx playwright install chromium
 npm test
 ```
 
-The **216 checks** cover accounting, parsing, encryption/tampering, repayment links, duplicate handling, notes, Undo, persistence and responsive UI flows. Android build/lint and browser checks also run in GitHub Actions. Desktop checks do not establish real-device behaviour.
+The **291 checks** cover accounting, parsing, encryption/tampering, repayment links, duplicate handling, notes, Undo, persistence and responsive UI flows. Android build/lint and browser checks also run in GitHub Actions. Desktop checks do not establish real-device behaviour.
 
 [Testing details and signing notes →](docs/TESTING.md)
 

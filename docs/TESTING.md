@@ -29,14 +29,14 @@ Individual suites:
 
 | Command | Coverage | Checks |
 |---|---|---:|
-| `npm run test:core` | Amount validation, cash/card/loan accounting, custom cycles, budgets and renewals | 58 |
+| `npm run test:core` | Amount validation, cash/card/loan accounting, custom cycles, budgets, renewals, note search and inclusive date boundaries | 97 |
 | `npm run test:native` | Native parser/domain rules, duplicate matching, encrypted backup and Undo guard | 91 |
-| `npm run test:ui` | Notes, captured-payment linking, budgets, Undo, source configuration, persistence and responsive flows | 67 |
-| Total | Desktop automated checks | 216 |
+| `npm run test:ui` | Notes, captured-payment linking, budgets, Undo, source configuration, search totals, tags, date ranges, persistence and responsive flows | 103 |
+| Total | Desktop automated checks | 291 |
 
 The native runner downloads a pinned JSON-java test jar from Maven Central, checks its SHA-256 and caches it under `.cache/`. It is never bundled in the APK. Playwright is a desktop-only development dependency.
 
-The UI runner starts and closes a local-only server on port 8774 automatically. Fixtures use a fixed November 2026 date and Asia/Kolkata timezone. Screenshots are written to ignored `test-results/`. To use an existing local Chrome installation, set `PAISA_BROWSER_CHANNEL=chrome`; the default is Playwright Chromium.
+The UI runner starts and closes a local-only server on port 8774 automatically. Fixtures use a fixed November 2026 date and Asia/Kolkata timezone. Screenshots are written to ignored `test-results/`. The new search suites cover person/loan separation, Fuel/Petrol matching, original-note preservation, inclusive end dates, invalid ranges and daylight-saving boundaries. To use an existing local Chrome installation, set `PAISA_BROWSER_CHANNEL=chrome`; the default is Playwright Chromium.
 
 ## CI
 
@@ -54,4 +54,4 @@ These checks require an actual phone and have not been established by desktop te
 - Save, restore and export a safety copy through Android's document picker.
 - Compare account totals with actual records and review unsupported bank formats.
 
-The 0.3.2 local verification includes a successful APK build and zero lint errors. The two acknowledged lint warnings concern the target API level and JavaScript enabled for the bundled local UI.
+The 0.4.0 local verification includes a successful APK build and zero lint errors. The two acknowledged lint warnings concern the target API level and JavaScript enabled for the bundled local UI.
