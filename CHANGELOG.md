@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.5.1 — 2026-11-19
+
+- Corrected sender/receipt timestamps on untouched pending legacy imports during rescan. This keeps the latest bank-balance snapshot from counting its own payment again. Reviewed user entries remain protected.
+- Added direct real-data comparisons between upgraded and fresh-import balances for all observed snapshot accounts.
+
 ## 0.5.0 — 2026-11-19
 
 - Audited the approved local corpus of 14,072 SMS against independently reviewed expectations. Added private, integrity-checked real-data regressions without including messages or identifiers in the repository or CI.

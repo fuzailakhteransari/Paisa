@@ -61,7 +61,7 @@ The custom reporting range is view state shared by Home and Activity/account-his
 
 ## Conservative SMS rescans
 
-`PreviousSmsParser` is frozen fingerprint compatibility code for 0.4. New classification uses `SmsParser` only. Inbox import uses the sender timestamp when available and also supplies the exact receipt timestamp for old-fingerprint lookup. No fuzzy time-window matching is used to identify an old import. `CapturePolicy` repairs only untouched pending SMS and flags unsupported old captures instead of deleting them. Source-only metadata enrichment remains compatible with Undo through `MutationGuard`.
+`PreviousSmsParser` is frozen fingerprint compatibility code for 0.4. New classification uses `SmsParser` only. Inbox import uses the sender timestamp when available and also supplies the exact receipt timestamp for old-fingerprint lookup. No fuzzy time-window matching is used to identify an old import. `CapturePolicy` repairs the sender timestamp as well as accounting fields only on untouched pending SMS and flags unsupported old captures instead of deleting them. Source-only metadata enrichment remains compatible with Undo through `MutationGuard`.
 
 `TransferLink` suggests unique opposite bank legs with exact references and amounts, then requires the user to confirm ownership. A single atomic, reversible commit retains the debit as a transfer and archives the matching credit source. `creditDate` preserves the destination leg's snapshot timing. Reference matching recognizes either leg of a confirmed transfer on later captures.
 

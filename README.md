@@ -4,13 +4,13 @@
   <p><strong>Your money, made clear.</strong></p>
   <p>An Android expense tracker built around less effort, useful reminders and a clean daily view.</p>
   <p>
-    <img alt="Version 0.5.0" src="https://img.shields.io/badge/version-0.5.0-174d40">
+    <img alt="Version 0.5.1" src="https://img.shields.io/badge/version-0.5.1-174d40">
     <img alt="Android 8 and above" src="https://img.shields.io/badge/Android-8%2B-174d40">
     <img alt="On-device processing" src="https://img.shields.io/badge/processing-on--device-174d40">
     <img alt="291 automated checks" src="https://img.shields.io/badge/checks-291-d8fa9a?labelColor=174d40">
   </p>
   <p>
-    <a href="https://github.com/fuzailakhteransari/Paisa/releases/tag/v0.5.0">Download Android build</a> ·
+    <a href="https://github.com/fuzailakhteransari/Paisa/releases/tag/v0.5.1">Download Android build</a> ·
     <a href="docs/USER_GUIDE.md">User guide</a> ·
     <a href="docs/TESTING.md">Build & test</a> ·
     <a href="CHANGELOG.md">Changelog</a>
@@ -63,13 +63,13 @@ The HDFC `Txn Rs…` UPI card purchase fix from 0.3.2 is included. Use **Setting
 
 ## Tested against the approved SMS backup
 
-The 0.5.0 parser was checked locally against **14,072 actual SMS**, with independent expectations and no comparison mismatches for the reviewed layouts. The audit recovered 43 missed bank events and removed 22 old false positives. The private messages, identifiers and financial exports are excluded from this repository, release archives and CI.
+The 0.5.1 parser was checked locally against **14,072 actual SMS**, with independent expectations and no comparison mismatches for the reviewed layouts. The audit recovered 43 missed bank events and removed 22 old false positives. The private messages, identifiers and financial exports are excluded from this repository, release archives and CI.
 
 After updating, use **Settings → Tracking & reminders → Import last 30 days**. Untouched pending captures can be corrected safely; reviewed notes and accounting choices stay protected. Older questionable captures show **Confirm SMS entry** and stay outside totals until confirmed. Open a matching bank entry to review whether both accounts are yours before linking an own transfer.
 
 ## Install and set up
 
-1. Download `Paisa-0.5.0-debug.apk` from [Releases](https://github.com/fuzailakhteransari/Paisa/releases/tag/v0.5.0).
+1. Download `Paisa-0.5.1-debug.apk` from [Releases](https://github.com/fuzailakhteransari/Paisa/releases/tag/v0.5.1).
 2. Install on Android 8+ with an updated Android System WebView. Existing 0.1/0.2/0.3/0.3.1/0.3.2/0.4.0 users should install the matching signed update over the app, without uninstalling.
 3. Open **Settings → Tracking & reminders** to choose optional SMS/Gmail/bank-alert access.
 4. Set an opening balance under **Accounts** and an optional monthly limit under **Budgets**.

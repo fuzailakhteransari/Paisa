@@ -35,7 +35,7 @@ public final class RealSmsScenarios {
                 return;
             }
             if(old!=null){
-                if(CapturePolicy.unreviewed(old)&&old.optInt("parserRevision")<SmsParser.REVISION){accounts(parsed(p).put("date",date));JSONObject next=CapturePolicy.revise(old,p);if(CapturePolicy.changed(old,next))repaired++;rows.put(id,next);}
+                if(CapturePolicy.unreviewed(old)&&old.optInt("parserRevision")<SmsParser.REVISION){accounts(parsed(p).put("date",date));JSONObject next=CapturePolicy.revise(old,p,date);if(CapturePolicy.changed(old,next))repaired++;rows.put(id,next);}
                 else if(!old.optBoolean("deleted")&&old.optString("reference").isEmpty()&&!p.reference.isEmpty())old.put("reference",p.reference);
                 seen.putIfAbsent("SMS:"+p.fingerprint,id);return;
             }
@@ -83,6 +83,12 @@ public final class RealSmsScenarios {
         for(JSONObject m:sorted)upgrade.ingest(m);
         check(upgrade.rows.size()==upgradedCount&&upgrade.repaired==repaired&&upgrade.flagged==flagged,"upgraded corpus replay is idempotent");
         Ledger.validate(upgrade.state());check(true,"upgraded ledger stays valid");
+        boolean earlierRevision=false;
+        for(JSONObject message:sorted){SmsParser.Parsed p=eligible(message)?SmsParser.parse(message.getString("address"),message.getString("body"),date(message)):null;if(p==null||!p.pending||date(message)==message.optLong("date"))continue;
+            Model older=new Model();JSONObject row=entry("revision-one",parsed(p),message.getLong("date")).put("parserRevision",1);older.accounts(parsed(p).put("date",date(message)));older.rows.put("revision-one",row);older.seen.put("SMS:"+p.fingerprint,"revision-one");older.ingest(message);
+            check(older.rows.size()==1&&older.rows.get("revision-one").getLong("date")==date(message),"actual earlier-revision receipt timestamp is corrected without another record");earlierRevision=true;break;
+        }
+        check(earlierRevision,"actual earlier-revision timestamp case exercised");
         JSONObject reviewed=null;JSONObject reviewedMessage=null;
         for(JSONObject result:baseline){JSONObject old=result.optJSONObject("parsed");if(old!=null&&old.optString("kind").equals("expense")){
             JSONObject message=byId.get(result.getInt("id"));SmsParser.Parsed current=SmsParser.parse(message.getString("address"),message.getString("body"),date(message));

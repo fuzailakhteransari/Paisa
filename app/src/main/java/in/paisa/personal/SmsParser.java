@@ -8,7 +8,7 @@ import java.security.MessageDigest;
 
 /** Conservative, offline parser. Unsupported formats are left for manual entry. */
 public final class SmsParser {
-    public static final int REVISION=1;
+    public static final int REVISION=2;
     public static final class Parsed {
         public long amount;
         public String kind, title, account, category, reference, fingerprint, merchantKey, bank, accountId, cardAccountId="";

@@ -56,7 +56,7 @@ public final class Capture {
                 if(prior!=null){
                     boolean revised=false;
                     if(source.equals("SMS")&&CapturePolicy.unreviewed(prior)&&prior.optInt("parserRevision")<SmsParser.REVISION){
-                        accounts(store,parsed,date);JSONObject corrected=CapturePolicy.revise(prior,parsed);
+                        accounts(store,parsed,date);JSONObject corrected=CapturePolicy.revise(prior,parsed,date);
                         if(CapturePolicy.changed(prior,corrected)){store.commit("Recheck captured SMS",new JSONArray().put(new JSONObject().put("table","entries").put("row",corrected)));revised=true;}
                         else store.put("entries",corrected);
                     }else if(!prior.optBoolean("deleted")&&prior.optString("reference").isEmpty()&&!parsed.reference.isEmpty()){

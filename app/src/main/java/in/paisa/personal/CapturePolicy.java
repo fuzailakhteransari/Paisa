@@ -19,9 +19,9 @@ public final class CapturePolicy {
         if(scope.equals("SMS:")&&receiptDate!=date){String fingerprint=SmsParser.previousFingerprint(sender,body,receiptDate);if(!fingerprint.isEmpty()){String id=lookup.find(scope+fingerprint);if(id!=null)return id;}}
         return "";
     }
-    public static JSONObject revise(JSONObject old,SmsParser.Parsed parsed)throws JSONException{
+    public static JSONObject revise(JSONObject old,SmsParser.Parsed parsed,long date)throws JSONException{
         JSONObject row=new JSONObject(old.toString());
-        row.put("amount",parsed.amount).put("kind",parsed.kind).put("title",parsed.title).put("category",parsed.category)
+        row.put("date",date).put("amount",parsed.amount).put("kind",parsed.kind).put("title",parsed.title).put("category",parsed.category)
             .put("account",parsed.account).put("accountId",parsed.accountId).put("bank",parsed.bank)
             .put("toAccountId",parsed.transferTarget.isEmpty()?parsed.cardAccountId:parsed.transferTarget)
             .put("reference",parsed.reference).put("merchantKey",parsed.merchantKey).put("pending",parsed.pending)
@@ -33,7 +33,7 @@ public final class CapturePolicy {
         return new JSONObject(old.toString()).put("captureReview","unsupported_sms").put("pending",true).put("parserRevision",SmsParser.REVISION);
     }
     public static boolean changed(JSONObject before,JSONObject after){
-        for(String key:new String[]{"amount","kind","title","category","account","accountId","bank","toAccountId","reference","merchantKey","pending","captureReview"})
+        for(String key:new String[]{"date","amount","kind","title","category","account","accountId","bank","toAccountId","reference","merchantKey","pending","captureReview"})
             if(!before.optString(key).equals(after.optString(key)))return true;
         return false;
     }
