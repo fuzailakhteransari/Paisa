@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.7.1 — 2026-11-19
+
+- Moved the personal web companion and API into a dedicated Paisa Vercel project at paisa-fuzail.vercel.app, deployed directly from the Paisa repository.
+- Removed personal routes, files and environment variables from the company application and retired the two accidental combined deployments.
+- Use a separate personal Google OAuth client and a fresh independent session secret. Updated Android pairing/web links, root PWA scope and Google-compatible referrer policy. Existing phone financial records remain local and unchanged.
+- Rechecked actual-data sync and backup interoperability; configured the separate personal Google client.
+
 ## 0.7.0 — 2026-11-19
 
 - Completed optional Google account connection, explicit first backup/restore and the desktop web companion. Local mode remains the default.

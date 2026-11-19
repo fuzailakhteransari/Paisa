@@ -4,13 +4,13 @@
   <p><strong>Your money, made clear.</strong></p>
   <p>An Android expense tracker built around less effort, useful reminders and a clean daily view.</p>
   <p>
-    <img alt="Version 0.7.0" src="https://img.shields.io/badge/version-0.7.0-174d40">
+    <img alt="Version 0.7.1" src="https://img.shields.io/badge/version-0.7.1-174d40">
     <img alt="Android 8 and above" src="https://img.shields.io/badge/Android-8%2B-174d40">
     <img alt="On-device processing" src="https://img.shields.io/badge/processing-on--device-174d40">
     <img alt="Cloud and actual-data checks" src="https://img.shields.io/badge/checks-passing-d8fa9a?labelColor=174d40">
   </p>
   <p>
-    <a href="https://github.com/fuzailakhteransari/Paisa/releases/tag/v0.7.0">Download Android build</a> ·
+    <a href="https://github.com/fuzailakhteransari/Paisa/releases/tag/v0.7.1">Download Android build</a> ·
     <a href="docs/USER_GUIDE.md">User guide</a> ·
     <a href="docs/TESTING.md">Build & test</a> ·
     <a href="CHANGELOG.md">Changelog</a>
@@ -19,7 +19,7 @@
 
 ## Optional Google sync and web companion
 
-**Use Paisa locally, or connect Google to manage the same records on your phone and computer.** Open Settings → Account & sync, connect Google, then explicitly choose a first backup or restore. Signing in alone never uploads your ledger. [Open Paisa web](https://dir-dash-app.vercel.app/paisa/) · [Sync design and setup](docs/CLOUD_SYNC.md)
+**Use Paisa locally, or connect Google to manage the same records on your phone and computer.** Open Settings → Account & sync, connect Google, then explicitly choose a first backup or restore. Signing in alone never uploads your ledger. [Open Paisa web](https://paisa-fuzail.vercel.app/) · [Sync design and setup](docs/CLOUD_SYNC.md)
 
 <p align="center"><img src="docs/images/account-sync.png" width="260" alt="Account and sync preferences with Local mode active and Google not connected"></p>
 
@@ -76,7 +76,7 @@ After updating, use **Settings → Tracking & reminders → Import last 30 days*
 
 ## Install and set up
 
-1. Download `Paisa-0.7.0-debug.apk` from [Releases](https://github.com/fuzailakhteransari/Paisa/releases/tag/v0.7.0).
+1. Download `Paisa-0.7.1-debug.apk` from [Releases](https://github.com/fuzailakhteransari/Paisa/releases/tag/v0.7.1).
 2. Install on Android 8+ with an updated Android System WebView. Existing 0.1/0.2/0.3/0.3.1/0.3.2/0.4.0/0.5.1 users should install the matching signed update over the app, without uninstalling.
 3. Open **Settings → Tracking & reminders** to choose optional SMS/Gmail/bank-alert access.
 4. Set an opening balance under **Accounts** and an optional monthly limit under **Budgets**.
@@ -133,5 +133,3 @@ tests/              Native domain and browser regression checks
 Native **Java + SQLite**, local **HTML/CSS/JavaScript**, no third-party runtime dependencies. Playwright and JSON-java are used only for desktop tests.
 
 [Architecture](docs/ARCHITECTURE.md) · [Contributing](CONTRIBUTING.md) · [Security reports](SECURITY.md)
-
-Live OAuth setup check: Google currently rejects the canonical host with “origin is not allowed”. The existing web OAuth client must authorize `https://dir-dash-app.vercel.app` in Google Cloud Console → Google Auth Platform → Clients → Authorized JavaScript origins. The client ID is supplied by the existing host configuration. This external setting is required before live Google connection works; local mode and localhost tests do not depend on it.

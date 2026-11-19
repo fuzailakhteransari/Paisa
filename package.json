@@ -1,6 +1,6 @@
 {
   "name": "paisa-android",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "private": true,
   "description": "Local-first Android expense tracker with optional Google backup and web sync.",
   "scripts": {
@@ -13,6 +13,13 @@
     "test:web": "node tests/cloud-web.test.cjs",
     "build:web": "node scripts/prepare-web.cjs"
   },
-  "engines": { "node": ">=22" },
-  "devDependencies": { "playwright": "1.62.1" }
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "playwright": "1.62.1"
+  },
+  "dependencies": {
+    "google-auth-library": "11.3.2"
+  }
 }
